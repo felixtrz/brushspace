@@ -177,6 +177,8 @@ export const CollabState = createComponent("CollabState", {
   /** Digits typed so far on the join keypad. */
   joinEntry: { type: Types.String, default: "" },
   joinPanelOpen: { type: Types.Boolean, default: false },
+  /** Network preflight warning for the join panel ("" = network looks fine). */
+  networkWarning: { type: Types.String, default: "" },
   revision: { type: Types.Int32, default: 0 },
 });
 

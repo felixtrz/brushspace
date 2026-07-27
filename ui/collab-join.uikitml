@@ -3,7 +3,7 @@
     flex-direction: column;
     align-items: center;
     width: 240px;
-    height: 360px;
+    height: 416px;
     padding: 14px;
     background-color: rgba(0, 0, 0, 0);
     border-width: 0px;
@@ -116,6 +116,15 @@
   .cancel-action:hover {
     background-color: rgba(255, 255, 255, 0.16);
   }
+
+  .join-warning {
+    width: 212px;
+    height: 46px;
+    margin-top: 10px;
+    font-size: 10px;
+    color: #fcd34d;
+    text-align: center;
+  }
 </style>
 <Panel class="join-panel">
   <span class="join-heading">Join a sketch</span>
@@ -143,4 +152,5 @@
   <div class="action-row">
     <button id="key-cancel" class="action-button cancel-action"><span>Cancel</span></button>
   </div>
+  <span id="join-warning" class="join-warning">Some networks (office or public Wi-Fi) block peer connections. If connecting fails, try home Wi-Fi or a phone hotspot.</span>
 </Panel>

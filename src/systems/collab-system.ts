@@ -32,6 +32,11 @@ import {
   parseCollabMessage,
   type CollabMessage,
 } from "../collab/protocol.js";
+import {
+  networkWarningFor,
+  probeNetwork,
+  type NetworkProbeVerdict,
+} from "../collab/network-probe.js";
 import type { Quat, StrokeData, Vec3 } from "../types.js";
 import {
   disposeBakedSketchGroup,
@@ -68,6 +73,12 @@ const PEER_SILENCE_TIMEOUT_SECONDS = 15;
 const RECONNECT_ATTEMPTS = 15;
 const RECONNECT_INTERVAL_SECONDS = 4;
 const HOST_ID_RETRIES = 3;
+// A first dial that hasn't opened by now never will (a blocked network takes
+// ~15-30s to report ICE failure); fail with advice instead of spinning on
+// "Joining..." forever. WebRTC not connecting on some networks is accepted -
+// the job here is telling the user, not preventing it.
+const JOIN_TIMEOUT_SECONDS = 30;
+const CONNECT_FAILED_MESSAGE = "Could not connect - try another network";
 
 /**
  * Two-user peer-to-peer collaboration, scoped to a sketch session. The host
@@ -132,6 +143,12 @@ export class CollabSystem extends createSystem({
   private keypadEntity?: Entity;
   private keypadDocument?: UIKitDocument;
   private appliedKeypadEntry: string | undefined;
+  private appliedKeypadWarning: string | undefined;
+
+  // Network preflight (see collab/network-probe.ts).
+  private probeInFlight = false;
+  private lastProbeVerdict?: NetworkProbeVerdict;
+  private joinStartedClock = -Infinity;
 
   private readonly tempMatrix = new Matrix4();
   private readonly tempVector = new Vector3();
@@ -191,6 +208,13 @@ export class CollabSystem extends createSystem({
     this.syncKeypad(appState);
     this.updateRemoteTip(delta);
     this.stepReconnect(delta);
+
+    if (
+      this.phase === "joining" &&
+      this.clock - this.joinStartedClock > JOIN_TIMEOUT_SECONDS
+    ) {
+      this.teardown(CONNECT_FAILED_MESSAGE, "error");
+    }
 
     if (this.phase !== "connected") {
       return;
@@ -324,6 +348,7 @@ export class CollabSystem extends createSystem({
     if (this.phase !== "idle") {
       return;
     }
+    this.refreshNetworkWarning();
     this.hostRetriesLeft = HOST_ID_RETRIES;
     this.sameCodeRetriesLeft = 0;
     this.startHosting(generateCollabCode());
@@ -334,6 +359,7 @@ export class CollabSystem extends createSystem({
     if (this.phase !== "idle") {
       return;
     }
+    this.refreshNetworkWarning();
     const appState = this.getAppState();
     appState?.setValue(CollabState, "joinPanelOpen", true);
     appState?.setValue(CollabState, "joinEntry", "");
@@ -360,6 +386,7 @@ export class CollabSystem extends createSystem({
     this.phase = "joining";
     this.role = "guest";
     this.code = code;
+    this.joinStartedClock = this.clock;
     this.setStatus("joining", `Joining ${code}...`);
 
     const peer = new Peer();
@@ -392,7 +419,12 @@ export class CollabSystem extends createSystem({
     peer.on("open", () => {
       if (this.peer === peer) {
         this.sameCodeRetriesLeft = 0;
-        this.setStatus("hosting", `Code ${code} - share it!`);
+        this.setStatus(
+          "hosting",
+          this.lastProbeVerdict === "restricted"
+            ? `Code ${code} - network may block connections`
+            : `Code ${code} - share it!`,
+        );
       }
     });
     peer.on("disconnected", () => {
@@ -467,8 +499,17 @@ export class CollabSystem extends createSystem({
         return;
       }
       if (!opened) {
-        // A dial that never came up; the retry loop owns the pacing.
         this.conn = undefined;
+        if (this.phase === "joining") {
+          // Defensive only: PeerJS 1.5.x never emits "close" for a
+          // connection that hasn't opened (close() early-returns), so a
+          // first dial dying in negotiation reaches us via the "error"
+          // handler below - that one is the operative fail-fast path. Kept
+          // in case a future PeerJS changes which event fires pre-open.
+          this.teardown(CONNECT_FAILED_MESSAGE, "error");
+        }
+        // Otherwise it was an abandoned reconnect dial; the retry loop owns
+        // the pacing.
         return;
       }
       if (this.byeReceived) {
@@ -484,6 +525,13 @@ export class CollabSystem extends createSystem({
       }
       if (!opened) {
         this.conn = undefined;
+        if (this.phase === "joining") {
+          // The first dial died in negotiation (usually a network that
+          // blocks WebRTC) - there is no retry loop yet, so surface it
+          // instead of spinning on "Joining...". PeerJS reports pre-open
+          // ICE/negotiation failure through this "error" event.
+          this.teardown(CONNECT_FAILED_MESSAGE, "error");
+        }
         return;
       }
       this.handleConnectionLost();
@@ -569,7 +617,7 @@ export class CollabSystem extends createSystem({
       );
       return;
     }
-    this.teardown("Connection failed - try again", "error");
+    this.teardown("Connection failed - try again or switch network", "error");
   }
 
   /** The other side said goodbye on purpose: keep every stroke, go solo. */
@@ -1017,6 +1065,57 @@ export class CollabSystem extends createSystem({
   }
 
   // -------------------------------------------------------------------------
+  // Network preflight
+  // -------------------------------------------------------------------------
+
+  /**
+   * Kick (or re-kick) the ICE probe and push the current warning into
+   * CollabState for the join panel. Runs on every Share/Join press so that
+   * switching networks - exactly what the warning suggests - gets a fresh
+   * verdict. The verdict only informs; it never blocks connecting.
+   */
+  private refreshNetworkWarning(): void {
+    this.applyNetworkWarning();
+    if (this.probeInFlight) {
+      return;
+    }
+    this.probeInFlight = true;
+    void probeNetwork().then((verdict) => {
+      this.probeInFlight = false;
+      this.lastProbeVerdict = verdict;
+      console.log("[Collab] network probe verdict:", verdict);
+      this.applyNetworkWarning();
+    });
+  }
+
+  private applyNetworkWarning(): void {
+    const appState = this.getAppState();
+    if (!appState) {
+      return;
+    }
+    appState.setValue(
+      CollabState,
+      "networkWarning",
+      networkWarningFor(this.lastProbeVerdict),
+    );
+    this.touch(appState);
+    // A host sharing from a restricted network waits forever on a code no
+    // guest can reach; fold the caveat into the status line it is watching
+    // (and lift it again when a re-probe on a new network comes back clean).
+    if (this.phase !== "hosting" || this.conn?.open) {
+      return;
+    }
+    if (this.lastProbeVerdict === "restricted") {
+      this.setStatus(
+        "hosting",
+        `Code ${this.code} - network may block connections`,
+      );
+    } else if (this.peer?.open) {
+      this.setStatus("hosting", `Code ${this.code} - share it!`);
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // Join keypad panel
   // -------------------------------------------------------------------------
 
@@ -1039,6 +1138,7 @@ export class CollabSystem extends createSystem({
     if (this.keypadDocument !== document) {
       this.keypadDocument = document;
       this.appliedKeypadEntry = undefined;
+      this.appliedKeypadWarning = undefined;
       this.bindKeypad(document, appState);
     }
     const entry = String(appState.getValue(CollabState, "joinEntry"));
@@ -1050,6 +1150,14 @@ export class CollabSystem extends createSystem({
       display?.setProperties({
         text: entry.padEnd(6, "·").split("").join(" "),
       });
+    }
+    const warning = String(appState.getValue(CollabState, "networkWarning"));
+    if (warning !== this.appliedKeypadWarning) {
+      this.appliedKeypadWarning = warning;
+      const display = document.getElementById("join-warning") as {
+        setProperties(properties: Record<string, unknown>): void;
+      } | null;
+      display?.setProperties({ text: warning });
     }
   }
 
@@ -1065,7 +1173,7 @@ export class CollabSystem extends createSystem({
       .addComponent(PanelUI, {
         config: "./ui/collab-join.json",
         maxWidth: 0.2,
-        maxHeight: 0.3,
+        maxHeight: 0.35,
       })
       .addComponent(RayInteractable);
     entity.object3D!.name = "BrushspaceJoinKeypad";
@@ -1080,6 +1188,7 @@ export class CollabSystem extends createSystem({
     this.keypadEntity = undefined;
     this.keypadDocument = undefined;
     this.appliedKeypadEntry = undefined;
+    this.appliedKeypadWarning = undefined;
   }
 
   private bindKeypad(document: UIKitDocument, appState: Entity): void {
