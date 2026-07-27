@@ -33,10 +33,10 @@ export const OPEN_BRUSH_ERASER_FORWARD_OFFSET = 0;
 /** Forward offset from the ray space to the drawing tip (PointerScript). */
 export const OPEN_BRUSH_POINTER_TIP_FORWARD_OFFSET = 0.045;
 /**
- * Grip-local pose of the tip anchor, tuned in-headset via the A-button flow
- * (TipAnchorTuningSystem) — the Quest browser reports bad target-ray-space
- * poses, so the draw head hangs off the grip space with this offset. The
- * left hand mirrors the tuned right-hand values across the X axis.
+ * Grip-local pose of the tip anchor, tuned in-headset — the Quest browser
+ * reports bad target-ray-space poses, so the draw head hangs off the grip
+ * space with this offset. The left hand mirrors the tuned right-hand values
+ * across the X axis.
  */
 export const OPEN_BRUSH_TIP_ANCHOR_POSITION_RIGHT: readonly [
   number, number, number,

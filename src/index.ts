@@ -59,7 +59,6 @@ import { SelectionSystem } from "./systems/selection-system.js";
 import { SketchLibrarySystem } from "./systems/sketch-library-system.js";
 import { StandardEnvironmentSystem } from "./systems/standard-environment-system.js";
 import { StrokeAuthoringSystem } from "./systems/stroke-authoring-system.js";
-import { TipAnchorTuningSystem } from "./systems/tip-anchor-tuning-system.js";
 import { WorldGrabSystem } from "./systems/world-grab-system.js";
 import { WorldGrabVisualsSystem } from "./systems/world-grab-visuals-system.js";
 
@@ -223,7 +222,6 @@ World.create(document.getElementById("scene-container") as HTMLDivElement, {
     .registerSystem(IntroSketchSystem)
     .registerSystem(StrokeAuthoringSystem)
     .registerSystem(BrushPointerVisualSystem)
-    .registerSystem(TipAnchorTuningSystem)
     .registerSystem(SelectionSystem)
     .registerSystem(SketchLibrarySystem)
     .registerSystem(CollabSystem)
