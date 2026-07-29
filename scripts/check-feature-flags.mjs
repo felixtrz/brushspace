@@ -15,7 +15,8 @@ function walk(directory) {
     }
 
     if (path.endsWith(".ts")) {
-      sources.set(relative(root, path), readFileSync(path, "utf8"));
+      const relativePath = relative(root, path).replaceAll("\\", "/");
+      sources.set(relativePath, readFileSync(path, "utf8"));
     }
   }
 }

@@ -64,6 +64,7 @@ coverage/
 public/gltf/generated/
 public/glxf/
 public/ui/
+public/openbrush/icosa-brushes/
 
 # Local source reference for porting
 reference/

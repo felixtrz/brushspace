@@ -14,6 +14,12 @@ import {
   type StrokePointerFrame,
   resolveStrokeSampleDecision,
   resolveStrokeSpawnIntervalMeters,
+  resolveDistanceSmoothedPressure,
+  resolveGeneratorSolidMinLengthMeters,
+  shouldSmoothStrokeSamplingPressure,
+  shouldDiscardGeneratedStroke,
+  shouldZeroInitialM11SamplingPressure,
+  OPEN_BRUSH_M11_PRESSURE_SMOOTH_WINDOW_METERS,
   OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS,
 } from "./stroke-authoring.js";
 import { StrokeFlags, createEmptyStrokeData, type ControlPoint } from "../types.js";
@@ -263,6 +269,12 @@ describe("stroke authoring state", () => {
 });
 
 describe("Open Brush stroke sampling", () => {
+  it("discards finalized strokes with no generated triangles", () => {
+    expect(shouldDiscardGeneratedStroke(0)).toBe(true);
+    expect(shouldDiscardGeneratedStroke(Number.NaN)).toBe(true);
+    expect(shouldDiscardGeneratedStroke(6)).toBe(false);
+  });
+
   it("computes the spawn interval from solid min length and pressured size", () => {
     // Light at its default size (1.125cm), full pressure:
     // 0.0015 + 0.01125 * 0.2 = 3.75mm between keeper points.
@@ -286,6 +298,144 @@ describe("Open Brush stroke sampling", () => {
     ).toBeCloseTo(0.0015 + 0.01125 * 0.15 * 0.2, 6);
   });
 
+  it("selects solid minimum length by generator rather than broad family", () => {
+    expect(
+      resolveGeneratorSolidMinLengthMeters({
+        generatorClass: "QuadStripBrushDistanceUV",
+        descriptorValue: 0.002,
+        geometryFamily: "ribbon",
+      }),
+    ).toBe(0.0015);
+    expect(
+      resolveGeneratorSolidMinLengthMeters({
+        generatorClass: "FlatGeometryBrush",
+        descriptorValue: 0.002,
+        geometryFamily: "ribbon",
+      }),
+    ).toBe(0.002);
+    expect(
+      resolveGeneratorSolidMinLengthMeters({
+        generatorClass: "ThickGeometryBrush",
+        geometryFamily: "thick-strip",
+      }),
+    ).toBe(0.002);
+    expect(
+      resolveGeneratorSolidMinLengthMeters({
+        generatorClass: "HullBrush",
+        descriptorValue: 0.003,
+        geometryFamily: "hull",
+      }),
+    ).toBe(0.003);
+  });
+
+  it("uses generator-specific particle, print, and hull spawn intervals", () => {
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 0.2,
+        pressure: 0.5,
+        pressureSizeMin: 0,
+        generatorClass: "SprayBrush",
+        sprayRateMultiplier: 4,
+      }),
+    ).toBeCloseTo(0.025, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        generatorClass: "GeniusParticlesBrush",
+        particleRate: 2,
+        localUnitsPerMeter: 0.5,
+      }),
+    ).toBeCloseTo(0.000625, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        generatorClass: "Square3DPrintBrush",
+        localUnitsPerMeter: 1,
+      }),
+    ).toBeCloseTo(0.005, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        generatorClass: "Square3DPrintBrush",
+        localUnitsPerMeter: 10,
+      }),
+    ).toBeCloseTo(0.01, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        generatorClass: "Square3DPrintBrush",
+        localUnitsPerMeter: 0.05,
+      }),
+    ).toBeCloseTo(0.0025, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        solidMinLengthMeters: 0.003,
+        generatorClass: "HullBrush",
+      }),
+    ).toBeCloseTo(0.003, 6);
+    expect(
+      resolveStrokeSpawnIntervalMeters({
+        brushSize: 1,
+        pressure: 1,
+        solidMinLengthMeters: 0.004,
+        generatorClass: "ConcaveHullBrush",
+      }),
+    ).toBeCloseTo(0.004, 6);
+  });
+
+  it("smooths keeper pressure over Open Brush's distance window", () => {
+    expect(
+      resolveDistanceSmoothedPressure({
+        previousPressure: 0,
+        pressure: 1,
+        distanceMeters: 0.1,
+      }),
+    ).toBeCloseTo(1 - Math.pow(0.1, 0.5), 6);
+    expect(
+      resolveDistanceSmoothedPressure({
+        previousPressure: 0,
+        pressure: 1,
+        distanceMeters: 0.1,
+        windowMeters: OPEN_BRUSH_M11_PRESSURE_SMOOTH_WINDOW_METERS,
+      }),
+    ).toBeCloseTo(0.9, 6);
+  });
+
+  it("preserves raw pressure for particle generators that disable smoothing", () => {
+    expect(shouldSmoothStrokeSamplingPressure("TubeBrush")).toBe(true);
+    expect(shouldSmoothStrokeSamplingPressure("QuadStripBrushDistanceUV")).toBe(
+      true,
+    );
+    expect(shouldSmoothStrokeSamplingPressure("SprayBrush")).toBe(false);
+    expect(
+      shouldSmoothStrokeSamplingPressure("MidpointPlusLifetimeSprayBrush"),
+    ).toBe(true);
+    expect(shouldSmoothStrokeSamplingPressure("GeniusParticlesBrush")).toBe(
+      false,
+    );
+  });
+
+  it("limits M11 zero initial pressure to GeometryBrush generator paths", () => {
+    expect(shouldZeroInitialM11SamplingPressure("FlatGeometryBrush")).toBe(true);
+    expect(shouldZeroInitialM11SamplingPressure("TubeBrush")).toBe(true);
+    expect(shouldZeroInitialM11SamplingPressure("ThickGeometryBrush")).toBe(
+      true,
+    );
+    expect(
+      shouldZeroInitialM11SamplingPressure("QuadStripBrushDistanceUV"),
+    ).toBe(false);
+    expect(shouldZeroInitialM11SamplingPressure("SprayBrush")).toBe(false);
+    expect(shouldZeroInitialM11SamplingPressure("GeniusParticlesBrush")).toBe(
+      false,
+    );
+  });
+
   it("ignores sub-half-millimeter movement from the last keeper", () => {
     expect(
       resolveStrokeSampleDecision([0, 0, 0], [0.0004, 0, 0], 0.00375),
@@ -301,6 +451,24 @@ describe("Open Brush stroke sampling", () => {
   it("keeps a new control point past the spawn interval", () => {
     expect(
       resolveStrokeSampleDecision([0, 0, 0], [0.004, 0, 0], 0.00375),
+    ).toBe("keep");
+  });
+
+  it("uses the pressured Spray interval for preview keeper sampling", () => {
+    const spawnInterval = resolveStrokeSpawnIntervalMeters({
+      brushSize: 0.02,
+      pressure: 1,
+      pressureSizeMin: 0.25,
+      generatorClass: "SprayBrush",
+      sprayRateMultiplier: 4,
+    });
+
+    expect(spawnInterval).toBeCloseTo(0.005);
+    expect(
+      resolveStrokeSampleDecision([0, 0, 0], [0.004, 0, 0], spawnInterval),
+    ).toBe("extend");
+    expect(
+      resolveStrokeSampleDecision([0, 0, 0], [0.006, 0, 0], spawnInterval),
     ).toBe("keep");
   });
 });

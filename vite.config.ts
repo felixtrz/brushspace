@@ -4,9 +4,9 @@ import { compileUIKit } from "@iwsdk/vite-plugin-uikitml";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
-    mkcert(),
+    ...(mode === "test" || mode.endsWith("http") ? [] : [mkcert()]),
     iwsdkDev({
       emulator: {
         device: "metaQuest3",
@@ -31,4 +31,4 @@ export default defineConfig({
   },
   publicDir: "public",
   base: "./",
-});
+}));

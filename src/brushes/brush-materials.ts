@@ -57,14 +57,13 @@ export function createBrushMaterialSpec(
   base.alphaCutoff = getFloatParam(entry, "Cutoff");
   base.emissiveIntensity = getFloatParam(entry, "EmissionGain");
   base.textureSlots = createTextureSlots(entry);
-  base.blending = resolveBlendMode(entry, color, base.alphaCutoff);
+  base.blending = resolveBlendMode(entry, base.alphaCutoff);
   base.transparent =
-    color[3] < 1 ||
     base.blending === "transparent" ||
     base.blending === "additive";
   base.depthWrite =
     base.blending === "opaque" ||
-    (base.blending === "alpha-cutout" && color[3] >= 1);
+    base.blending === "alpha-cutout";
   if (entry.supportStatus !== "supported") {
     base.shaderRewrite = "fallback";
     base.warning =
@@ -129,9 +128,9 @@ function createFamilyMaterialSpec(
         materialFamily: family,
         shaderRewrite: "semantic-family",
         sourceBlendMode: 0,
-        blending: transparent ? "transparent" : "opaque",
-        transparent,
-        depthWrite: !transparent,
+        blending: "opaque",
+        transparent: false,
+        depthWrite: true,
         doubleSided: true,
         vertexColors: true,
         alphaCutoff: 0,
@@ -143,7 +142,6 @@ function createFamilyMaterialSpec(
 
 function resolveBlendMode(
   entry: BrushInventoryEntry,
-  color: Rgba,
   alphaCutoff: number,
 ): BrushBlendingMode {
   if (entry.blendMode === 2 || entry.materialFamily === "additive") {
@@ -151,9 +149,6 @@ function resolveBlendMode(
   }
   if (entry.blendMode === 1 || alphaCutoff > 0) {
     return "alpha-cutout";
-  }
-  if (color[3] < 1) {
-    return "transparent";
   }
   return "opaque";
 }

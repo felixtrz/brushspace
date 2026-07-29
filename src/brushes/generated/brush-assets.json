@@ -17,11 +17,29 @@
       "textures": {
         "MainTex": {
           "file": "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "OilPaint-f72ec0e7-a844-4e38-82e3-140c44772699-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -46,8 +64,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 0,
       "tags": [
         "default"
       ],
@@ -63,11 +96,29 @@
       "textures": {
         "MainTex": {
           "file": "OilPaint-c515dad7-4393-4681-81ad-162ef052241b-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "OilPaint-c515dad7-4393-4681-81ad-162ef052241b-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -90,6 +141,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -108,11 +172,29 @@
       "textures": {
         "MainTex": {
           "file": "Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Ink-f5c336cf-5108-4b40-ade9-c687504385ab-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -137,8 +219,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 1,
       "tags": [
         "default"
       ],
@@ -154,11 +251,29 @@
       "textures": {
         "MainTex": {
           "file": "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Ink-c0012095-3ffd-4040-8ee1-fc180d346eaa-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -181,6 +296,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -199,11 +327,29 @@
       "textures": {
         "MainTex": {
           "file": "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "ThickPaint-75b32cf0-fdd6-4d89-a64b-e2a00b247b0f-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -228,8 +374,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 2,
       "tags": [
         "default"
       ],
@@ -245,11 +406,29 @@
       "textures": {
         "MainTex": {
           "file": "ThickPaint-fdf0326a-c0d1-4fed-b101-9db0ff6d071f-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "ThickPaint-fdf0326a-c0d1-4fed-b101-9db0ff6d071f-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -272,6 +451,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -290,11 +482,29 @@
       "textures": {
         "MainTex": {
           "file": "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "WetPaint-b67c0e81-ce6d-40a8-aeb0-ef036b081aa3-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -319,8 +529,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 3,
       "tags": [
         "default"
       ],
@@ -336,11 +561,29 @@
       "textures": {
         "MainTex": {
           "file": "WetPaint-dea67637-cd1a-27e4-c9b1-52f4bbcb84e5-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "WetPaint-dea67637-cd1a-27e4-c9b1-52f4bbcb84e5-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -365,6 +608,19 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
       "tags": [],
@@ -381,7 +637,16 @@
       "textures": {
         "MainTex": {
           "file": "Marker-429ed64a-4e97-4466-84d3-145a861ef684-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -406,8 +671,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 4,
       "tags": [
         "whiteboard",
         "default"
@@ -424,7 +704,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedMarker-d90c6ad8-af0f-4b54-b422-e0f92abe1b3c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -449,8 +738,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 5,
       "tags": [
         "whiteboard",
         "default"
@@ -467,7 +771,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedMarker_Flat-1a26b8c0-8a07-4f8a-9fac-d2ef36e0cad0-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -492,8 +805,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "stretch",
+        "ribbonOffsetInTexcoord1": false
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 22,
       "tags": [
         "experimental"
       ],
@@ -530,8 +860,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "stretch",
+        "ribbonOffsetInTexcoord1": true
       },
+      "catalogSection": "standard",
+      "catalogOrder": 6,
       "tags": [
         "default"
       ],
@@ -547,7 +894,16 @@
       "textures": {
         "MainTex": {
           "file": "Highlighter-cf019139-d41c-4eb0-a1d0-5cf54b0a42f3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -572,8 +928,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 7,
       "tags": [
         "default"
       ],
@@ -609,8 +980,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 8,
       "tags": [
         "default"
       ],
@@ -644,6 +1030,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -682,6 +1081,19 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
       "tags": [],
@@ -698,7 +1110,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedFlat-b468c1fb-f254-41ed-8ec9-57030bc5660c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -723,8 +1144,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 9,
       "tags": [
         "default"
       ],
@@ -740,7 +1176,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedFlat-c8ccb53d-ae13-45ef-8afb-b730d81394eb-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -763,6 +1208,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -801,8 +1259,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "stretch",
+        "ribbonOffsetInTexcoord1": true
       },
+      "catalogSection": "standard",
+      "catalogOrder": 10,
       "tags": [
         "default"
       ],
@@ -818,7 +1293,16 @@
       "textures": {
         "MainTex": {
           "file": "SoftHighlighter-accb32f5-4509-454f-93f8-1df3fd31df1b-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -843,8 +1327,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 11,
       "tags": [
         "whiteboard",
         "default",
@@ -862,7 +1361,16 @@
       "textures": {
         "MainTex": {
           "file": "Light-2241cd32-8ba2-48a5-9ee7-2caef7e9ed62-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -887,8 +1395,23 @@
         "pressureOpacityRange": [
           0.5,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 12,
       "tags": [
         "default",
         "audioreactive"
@@ -905,7 +1428,16 @@
       "textures": {
         "MainTex": {
           "file": "Fire-cb92b597-94ca-4255-b017-0e3f42f12f9e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 3,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -930,8 +1462,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 13,
       "tags": [
         "default",
         "audioreactive"
@@ -948,7 +1495,16 @@
       "textures": {
         "MainTex": {
           "file": "Embers-02ffb866-7fb2-4d15-b761-1012cefb1360-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -973,8 +1529,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.35,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 14,
       "tags": [
         "default",
         "audioreactive",
@@ -992,7 +1563,16 @@
       "textures": {
         "MainTex": {
           "file": "Smoke-70d79cca-b159-4f35-990c-f02193947fe8-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1017,8 +1597,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.05,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0.1,
+        "particleInitialRotationRange": 360,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 15,
       "tags": [
         "default",
         "particle"
@@ -1035,7 +1630,16 @@
       "textures": {
         "MainTex": {
           "file": "Snow-d902ed8b-d0d1-476c-a8de-878a79e3a34c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1060,8 +1664,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.35,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 1,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 16,
       "tags": [
         "default",
         "audioreactive",
@@ -1099,8 +1718,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 17,
       "tags": [
         "default",
         "audioreactive"
@@ -1117,7 +1751,16 @@
       "textures": {
         "MainTex": {
           "file": "Stars-0eb4db27-3f82-408d-b5a1-19ebd7d5b711-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1142,8 +1785,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.3,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0.65,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 18,
       "tags": [
         "default",
         "audioreactive",
@@ -1161,7 +1819,16 @@
       "textures": {
         "MainTex": {
           "file": "VelvetInk-d229d335-c334-495a-a801-660ac8a87360-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1186,8 +1853,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 19,
       "tags": [
         "default",
         "audioreactive"
@@ -1204,7 +1886,16 @@
       "textures": {
         "MainTex": {
           "file": "Waveform-10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 2,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1229,8 +1920,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 20,
       "tags": [
         "default",
         "audioreactive"
@@ -1247,7 +1953,16 @@
       "textures": {
         "MainTex": {
           "file": "Splatter-8dc4a70c-d558-4efd-a5ed-d4e860f40dc3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1272,8 +1987,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 3,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.5,
+        "particlePositionVariance": 0.05,
+        "particleRotationVariance": 180,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 21,
       "tags": [
         "default"
       ],
@@ -1289,7 +2019,16 @@
       "textures": {
         "MainTex": {
           "file": "Splatter-7a1c8107-50c5-4b70-9a39-421576d6617e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1312,6 +2051,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 3,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.5,
+        "particlePositionVariance": 0.05,
+        "particleRotationVariance": 180,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -1330,11 +2082,29 @@
       "textures": {
         "MainTex": {
           "file": "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "DuctTape-d0262945-853c-4481-9cbd-88586bed93cb-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1359,8 +2129,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 22,
       "tags": [
         "default"
       ],
@@ -1376,11 +2161,29 @@
       "textures": {
         "MainTex": {
           "file": "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "DuctTape-3ca16e2f-bdcd-4da2-8631-dcef342f40f1-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1403,6 +2206,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -1421,11 +2237,29 @@
       "textures": {
         "MainTex": {
           "file": "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Paper-f1114e2e-eb8d-4fde-915a-6e653b54e9f5-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1450,8 +2284,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 23,
       "tags": [
         "default"
       ],
@@ -1467,11 +2316,29 @@
       "textures": {
         "MainTex": {
           "file": "Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Paper-759f1ebd-20cd-4720-8d41-234e0da63716-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1494,6 +2361,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -1512,7 +2392,16 @@
       "textures": {
         "MainTex": {
           "file": "CoarseBristles-1161af82-50cf-47db-9706-0c3576d43c43-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1537,8 +2426,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 2,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.3,
+        "particlePositionVariance": 0.05,
+        "particleRotationVariance": 5,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 24,
       "tags": [
         "default"
       ],
@@ -1554,7 +2458,16 @@
       "textures": {
         "MainTex": {
           "file": "CoarseBristles-79168f10-6961-464a-8be1-57ed364c5600-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1579,6 +2492,19 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 2,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.3,
+        "particlePositionVariance": 0.05,
+        "particleRotationVariance": 5,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
       "tags": [],
@@ -1595,7 +2521,16 @@
       "textures": {
         "MainTex": {
           "file": "WigglyGraphite-5347acf0-a8e2-47b6-8346-30c70719d763-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1620,8 +2555,23 @@
         "pressureOpacityRange": [
           0.01,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 25,
       "tags": [
         "default",
         "audioreactive"
@@ -1638,7 +2588,16 @@
       "textures": {
         "MainTex": {
           "file": "WigglyGraphite-e814fef1-97fd-7194-4a2f-50c2bb918be2-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1662,6 +2621,19 @@
         ],
         "pressureOpacityRange": [
           0.01,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
           1
         ]
       },
@@ -1699,8 +2671,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "stretch",
+        "ribbonOffsetInTexcoord1": true
       },
+      "catalogSection": "standard",
+      "catalogOrder": 26,
       "tags": [
         "default",
         "audioreactive"
@@ -1717,7 +2706,16 @@
       "textures": {
         "MainTex": {
           "file": "Streamers-44bb800a-fbc3-4592-8426-94ecb05ddec3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 5,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1742,8 +2740,23 @@
         "pressureOpacityRange": [
           0.4,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 27,
       "tags": [
         "default",
         "audioreactive"
@@ -1760,11 +2773,29 @@
       "textures": {
         "MainTex": {
           "file": "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Hypercolor-dce872c2-7b49-4684-b59b-c45387949c5c-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1789,8 +2820,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 28,
       "tags": [
         "default",
         "audioreactive"
@@ -1807,11 +2853,29 @@
       "textures": {
         "MainTex": {
           "file": "Hypercolor-e8ef32b1-baa8-460a-9c2c-9cf8506794f5-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Hypercolor-e8ef32b1-baa8-460a-9c2c-9cf8506794f5-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1834,6 +2898,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -1854,7 +2931,16 @@
       "textures": {
         "MainTex": {
           "file": "Bubbles-89d104cd-d012-426b-b5b3-bbaee63ac43c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1879,8 +2965,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.15,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0.65,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 29,
       "tags": [
         "default",
         "particle"
@@ -1917,8 +3018,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 30,
       "tags": [
         "default",
         "audioreactive"
@@ -1935,7 +3061,16 @@
       "textures": {
         "MainTex": {
           "file": "CelVinyl-700f3aa8-9a7c-2384-8b8a-ea028905dd8c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -1960,8 +3095,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 31,
       "tags": [
         "whiteboard",
         "default"
@@ -1978,7 +3128,16 @@
       "textures": {
         "MainTex": {
           "file": "HyperGrid-6a1cf9f9-032c-45ec-9b6e-a6680bee32e9-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2003,8 +3162,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 32,
       "tags": [
         "default",
         "audioreactive"
@@ -2021,7 +3195,16 @@
       "textures": {
         "MainTex": {
           "file": "LightWire-4391aaaa-df81-4396-9e33-31e4e4930b27-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2046,8 +3229,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 33,
       "tags": [
         "default",
         "audioreactive"
@@ -2084,8 +3292,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 34,
       "tags": [
         "default",
         "audioreactive"
@@ -2102,7 +3335,16 @@
       "textures": {
         "MainTex": {
           "file": "Dots-6a1cf9f9-032c-45ec-9b1d-a6680bee30f7-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2127,8 +3369,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 35,
       "tags": [
         "whiteboard",
         "default",
@@ -2167,8 +3424,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 1,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 5,
+        "tubeEndCaps": false,
+        "tubeHardEdges": true,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 5,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 1.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 36,
       "tags": [
         "default"
       ],
@@ -2184,7 +3466,16 @@
       "textures": {
         "BumpMap": {
           "file": "Icing-2f212815-f4d3-c1a4-681a-feeaf9c6dc37-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2209,8 +3500,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 37,
       "tags": [
         "whiteboard",
         "default"
@@ -2247,8 +3563,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 38,
       "tags": [
         "whiteboard",
         "default",
@@ -2286,8 +3627,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 39,
       "tags": [
         "whiteboard",
         "default"
@@ -2324,8 +3690,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0,
+        "tubeSideCount": 3,
+        "tubeEndCaps": true,
+        "tubeHardEdges": true,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 4,
+        "tubeTaperScalar": 1.1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 40,
       "tags": [
         "default"
       ],
@@ -2361,8 +3752,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0,
+        "tubeSideCount": 4,
+        "tubeEndCaps": false,
+        "tubeHardEdges": true,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 1,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 4
       },
+      "catalogSection": "standard",
+      "catalogOrder": 41,
       "tags": [
         "default"
       ],
@@ -2398,8 +3814,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 42,
       "tags": [
         "default",
         "audioreactive"
@@ -2416,11 +3857,29 @@
       "textures": {
         "MainTex": {
           "file": "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "AlphaMask": {
           "file": "Comet-1caa6d7d-f015-3f54-3a4b-8b5354d39f81-v10.0-AlphaMask.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2445,8 +3904,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.1,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 3,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "standard",
+      "catalogOrder": 43,
       "tags": [
         "default",
         "audioreactive"
@@ -2483,8 +3967,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 44,
       "tags": [
         "whiteboard",
         "default",
@@ -2522,8 +4021,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 45,
       "tags": [
         "whiteboard",
         "default",
@@ -2561,8 +4075,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 46,
       "tags": [
         "whiteboard",
         "default",
@@ -2580,7 +4109,16 @@
       "textures": {
         "MainTex": {
           "file": "DiamondHull-c8313697-2563-47fc-832e-290f4c04b901-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2605,8 +4143,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "standard",
+      "catalogOrder": 47,
       "tags": [
         "default",
         "hull"
@@ -2623,11 +4176,29 @@
       "textures": {
         "MainTex": {
           "file": "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Leaves-ea19de07-d0c0-4484-9198-18489a3c1487-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2652,6 +4223,19 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 2,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.3,
+        "particlePositionVariance": 0.15,
+        "particleRotationVariance": 20,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
       "tags": [],
@@ -2668,7 +4252,16 @@
       "textures": {
         "MainTex": {
           "file": "DotMarker-d1d991f2-e7a0-4cf1-b328-f57e915e6260-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2693,8 +4286,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 3,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 20,
       "tags": [
         "experimental"
       ],
@@ -2710,7 +4318,16 @@
       "textures": {
         "MainTex": {
           "file": "Plasma-c33714d1-b2f9-412e-bd50-1884c9d46336-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2735,8 +4352,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 23,
       "tags": [
         "experimental",
         "audioreactive"
@@ -2753,7 +4385,16 @@
       "textures": {
         "MainTex": {
           "file": "Taffy-0077f88c-d93a-42f3-b59b-b31c50cdb414-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -2776,6 +4417,19 @@
           1
         ],
         "pressureOpacityRange": [
+          1,
+          1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
           1,
           1
         ]
@@ -2813,6 +4467,19 @@
         "pressureOpacityRange": [
           0,
           0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          0,
+          0
         ]
       },
       "tags": [],
@@ -2844,6 +4511,19 @@
           0
         ],
         "pressureOpacityRange": [
+          0,
+          0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
           0,
           0
         ]
@@ -2879,6 +4559,19 @@
         "pressureOpacityRange": [
           0,
           0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          0,
+          0
         ]
       },
       "tags": [],
@@ -2910,6 +4603,19 @@
           0
         ],
         "pressureOpacityRange": [
+          0,
+          0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
           0,
           0
         ]
@@ -2945,6 +4651,19 @@
         "pressureOpacityRange": [
           0,
           0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          0,
+          0
         ]
       },
       "tags": [],
@@ -2976,6 +4695,19 @@
           0
         ],
         "pressureOpacityRange": [
+          0,
+          0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
           0,
           0
         ]
@@ -3011,6 +4743,19 @@
         "pressureOpacityRange": [
           0,
           0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          0,
+          0
         ]
       },
       "tags": [],
@@ -3044,6 +4789,19 @@
         "pressureOpacityRange": [
           0,
           0
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 0,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          0,
+          0
         ]
       },
       "tags": [],
@@ -3057,11 +4815,29 @@
       "textures": {
         "MainTex": {
           "file": "Gouache-1b897b7e-9b76-425a-b031-a867c48df409-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Gouache-1b897b7e-9b76-425a-b031-a867c48df409-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3086,8 +4862,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 0,
       "tags": [
         "experimental"
       ],
@@ -3103,11 +4894,29 @@
       "textures": {
         "MainTex": {
           "file": "Gouache-4465b5ef-3605-bec4-2b3e-6b04508ddb6b-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Gouache-4465b5ef-3605-bec4-2b3e-6b04508ddb6b-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3132,6 +4941,19 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
       "tags": [],
@@ -3148,7 +4970,16 @@
       "textures": {
         "MainTex": {
           "file": "MylarTube-8e58ceea-7830-49b4-aba9-6215104ab52a-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3173,8 +5004,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 1,
       "tags": [
         "experimental"
       ],
@@ -3190,7 +5046,16 @@
       "textures": {
         "MainTex": {
           "file": "Rain-03a529e1-f519-3dd4-582d-2d5cd92c3f4f-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3215,8 +5080,33 @@
         "pressureOpacityRange": [
           0.4,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 6,
+        "tubeEndCaps": false,
+        "tubeHardEdges": true,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 2,
       "tags": [
         "experimental"
       ],
@@ -3232,11 +5122,29 @@
       "textures": {
         "MainTex": {
           "file": "DryBrush-725f4c6a-6427-6524-29ab-da371924adab-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "DryBrush-725f4c6a-6427-6524-29ab-da371924adab-v10.0-BumpMap.jpg",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3261,8 +5169,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 3,
       "tags": [
         "experimental"
       ],
@@ -3278,11 +5201,29 @@
       "textures": {
         "MainTex": {
           "file": "LeakyPen-ddda8745-4bb5-ac54-88b6-d1480370583e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "SecondaryTex": {
           "file": "LeakyPen-ddda8745-4bb5-ac54-88b6-d1480370583e-v10.0-SecondaryTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3307,8 +5248,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 4,
       "tags": [
         "experimental"
       ],
@@ -3324,7 +5280,16 @@
       "textures": {
         "MainTex": {
           "file": "Sparks-50e99447-3861-05f4-697d-a1b96e771b98-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3349,8 +5314,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 3,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 5,
       "tags": [
         "experimental"
       ],
@@ -3366,7 +5356,16 @@
       "textures": {
         "MainTex": {
           "file": "Wind-7136a729-1aab-bd24-f8b2-ca88b6adfb67-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3391,8 +5390,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 1,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 6,
       "tags": [
         "experimental"
       ],
@@ -3408,7 +5422,16 @@
       "textures": {
         "MainTex": {
           "file": "Rising Bubbles-a8147ce1-005e-abe4-88e8-09a1eaadcc89-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3433,8 +5456,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0.35,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0.05,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 7,
       "tags": [
         "experimental",
         "particle"
@@ -3451,7 +5489,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedWire-9568870f-8594-60f4-1b20-dfbc8a5eac0e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3476,8 +5523,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 4,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 8,
       "tags": [
         "experimental"
       ],
@@ -3493,11 +5565,29 @@
       "textures": {
         "MainTex": {
           "file": "SquarePaper-2e03b1bf-3ebd-4609-9d7e-f4cafadc4dfa-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "SquarePaper-2e03b1bf-3ebd-4609-9d7e-f4cafadc4dfa-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 2,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3522,8 +5612,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 9,
       "tags": [
         "experimental"
       ],
@@ -3539,11 +5644,29 @@
       "textures": {
         "MainTex": {
           "file": "ThickGeometry-39ee7377-7a9e-47a7-a0f8-0c77712f75d3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "ThickGeometry-39ee7377-7a9e-47a7-a0f8-0c77712f75d3-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3568,8 +5691,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 10,
       "tags": [
         "experimental"
       ],
@@ -3605,8 +5743,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 11,
       "tags": [
         "experimental",
         "audioreactive"
@@ -3643,8 +5796,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 12,
       "tags": [
         "experimental",
         "broken"
@@ -3680,8 +5848,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 13,
       "tags": [
         "experimental",
         "broken"
@@ -3717,8 +5900,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 14,
       "tags": [
         "experimental",
         "broken"
@@ -3754,8 +5952,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 15,
       "tags": [
         "experimental",
         "broken"
@@ -3771,11 +5984,29 @@
       "textures": {
         "MainTex": {
           "file": "Muscle-f28c395c-a57d-464b-8f0b-558c59478fa3-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Muscle-f28c395c-a57d-464b-8f0b-558c59478fa3-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3800,8 +6031,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 2,
+        "tubeTaperScalar": 0.1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 16,
       "tags": [
         "experimental"
       ],
@@ -3817,11 +6073,29 @@
       "textures": {
         "MainTex": {
           "file": "Guts-99aafe96-1645-44cd-99bd-979bc6ef37c5-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Guts-99aafe96-1645-44cd-99bd-979bc6ef37c5-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3846,8 +6120,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 1,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 17,
       "tags": [
         "experimental"
       ],
@@ -3863,11 +6162,29 @@
       "textures": {
         "MainTex": {
           "file": "Fire2-53d753ef-083c-45e1-98e7-4459b4471219-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "DisplaceTex": {
           "file": "Fire2-53d753ef-083c-45e1-98e7-4459b4471219-v10.0-DisplaceTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -3892,8 +6209,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 18,
       "tags": [
         "experimental",
         "audioreactive"
@@ -3930,8 +6262,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 19,
       "tags": [
         "experimental"
       ],
@@ -3967,8 +6324,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 21,
       "tags": [
         "experimental"
       ],
@@ -3984,7 +6366,16 @@
       "textures": {
         "MainTex": {
           "file": "WaveformParticles-6a1cf9f9-032c-45ec-9b6e-a6680bee30f7-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4009,8 +6400,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 4,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 24,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4027,7 +6433,16 @@
       "textures": {
         "MainTex": {
           "file": "BubbleWand-eba3f993-f9a1-4d35-b84e-bb08f48981a4-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4052,8 +6467,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 25,
       "tags": [
         "experimental"
       ],
@@ -4069,7 +6509,16 @@
       "textures": {
         "MainTex": {
           "file": "DanceFloor-6a1cf9f9-032c-45ec-311e-a6680bee32e9-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4094,8 +6543,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 0,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 0,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 26,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4112,7 +6576,16 @@
       "textures": {
         "MainTex": {
           "file": "WaveformTube-0f5820df-cb6b-4a6c-960e-56e4c8000eda-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 2,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4137,8 +6610,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 27,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4155,7 +6653,16 @@
       "textures": {
         "MainTex": {
           "file": "Drafting-492b36ff-b337-436a-ba5f-1e87ee86747e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4180,8 +6687,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 28,
       "tags": [
         "experimental"
       ],
@@ -4197,7 +6719,16 @@
       "textures": {
         "MainTex": {
           "file": "SingleSided-f0a2298a-be80-432c-9fee-a86dcc06f4f9-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4222,8 +6753,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 50,
       "tags": [
         "experimental"
       ],
@@ -4239,7 +6785,16 @@
       "textures": {
         "MainTex": {
           "file": "DoubleFlat-f4a0550c-332a-4e1a-9793-b71508f4a454-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4264,8 +6819,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 49,
       "tags": [
         "experimental"
       ],
@@ -4301,8 +6871,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 31,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4319,7 +6914,16 @@
       "textures": {
         "MainTex": {
           "file": "Feather-a555b809-2017-46cb-ac26-e63173d8f45e-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4344,8 +6948,23 @@
         "pressureOpacityRange": [
           0,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 32,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4362,11 +6981,29 @@
       "textures": {
         "MainTex": {
           "file": "DuctTapeGeometry-84d5bbb2-6634-8434-f8a7-681b576b4664-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "DuctTapeGeometry-84d5bbb2-6634-8434-f8a7-681b576b4664-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4391,8 +7028,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "distance",
+        "ribbonOffsetInTexcoord1": false
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 33,
       "tags": [
         "experimental"
       ],
@@ -4408,7 +7062,16 @@
       "textures": {
         "MainTex": {
           "file": "TaperedHueShift-3d9755da-56c7-7294-9b1d-5ec349975f52-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "clamp",
+            "wrapV": "clamp",
+            "anisotropy": 4,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4433,8 +7096,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": true,
+        "particleSizeVariance": 0.25,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 34,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4451,15 +7129,42 @@
       "textures": {
         "MainTex": {
           "file": "Lacewing-1cf94f63-f57a-4a1a-ad14-295af4f5ab5c-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "SpecTex": {
           "file": "Lacewing-1cf94f63-f57a-4a1a-ad14-295af4f5ab5c-v10.0-SpecTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Lacewing-1cf94f63-f57a-4a1a-ad14-295af4f5ab5c-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4484,8 +7189,23 @@
         "pressureOpacityRange": [
           0,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 35,
       "tags": [
         "experimental"
       ],
@@ -4501,15 +7221,42 @@
       "textures": {
         "MainTex": {
           "file": "Marbled Rainbow-c86c058d-1bda-2e94-08db-f3d6a96ac4a1-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "SpecTex": {
           "file": "Marbled Rainbow-c86c058d-1bda-2e94-08db-f3d6a96ac4a1-v10.0-SpecTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Marbled Rainbow-c86c058d-1bda-2e94-08db-f3d6a96ac4a1-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4534,8 +7281,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 36,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4552,11 +7314,29 @@
       "textures": {
         "MainTex": {
           "file": "Charcoal-fde6e778-0f7a-e584-38d6-89d44cee59f6-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Charcoal-fde6e778-0f7a-e584-38d6-89d44cee59f6-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4581,8 +7361,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 37,
       "tags": [
         "experimental"
       ],
@@ -4618,8 +7413,33 @@
         "pressureOpacityRange": [
           0,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 38,
       "tags": [
         "experimental"
       ],
@@ -4655,8 +7475,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "stretch",
+        "tubeShapeModifier": 1,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 39,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4693,8 +7538,33 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "tubeCapAspect": 0.8,
+        "tubeSideCount": 8,
+        "tubeEndCaps": true,
+        "tubeHardEdges": false,
+        "tubeUvStyle": "distance",
+        "tubeShapeModifier": 0,
+        "tubeTaperScalar": 1,
+        "tubePetalDisplacementAmount": 0.5,
+        "tubePetalDisplacementExponent": 3,
+        "tubeBreakAngleMultiplier": 8
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 40,
       "tags": [
         "experimental"
       ],
@@ -4710,7 +7580,16 @@
       "textures": {
         "MainTex": {
           "file": "WaveformFFT-d120944d-772f-4062-99c6-46a6f219eeaf-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": false,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 2,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4735,8 +7614,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 41,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4773,8 +7667,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 42,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4811,8 +7720,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 43,
       "tags": [
         "experimental",
         "audioreactive"
@@ -4849,8 +7773,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 44,
       "tags": [
         "experimental"
       ],
@@ -4886,8 +7825,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 45,
       "tags": [
         "experimental"
       ],
@@ -4923,8 +7877,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 46,
       "tags": [
         "experimental",
         "hull"
@@ -4941,11 +7910,29 @@
       "textures": {
         "MainTex": {
           "file": "Leaves2-7259cce5-41c1-ec74-c885-78af28a31d95-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "Leaves2-7259cce5-41c1-ec74-c885-78af28a31d95-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -4970,8 +7957,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 2,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0.3,
+        "particlePositionVariance": 0.15,
+        "particleRotationVariance": 20,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 47,
       "tags": [
         "experimental"
       ],
@@ -4987,11 +7989,29 @@
       "textures": {
         "MainTex": {
           "file": "InkGeometry-7c972c27-d3c2-8af4-7bf8-5d9db8f0b7bb-v10.0-MainTex.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": true,
+            "mipmaps": true,
+            "filter": "bilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         },
         "BumpMap": {
           "file": "InkGeometry-7c972c27-d3c2-8af4-7bf8-5d9db8f0b7bb-v10.0-BumpMap.png",
-          "resolved": true
+          "resolved": true,
+          "importer": {
+            "sRGB": false,
+            "mipmaps": true,
+            "filter": "trilinear",
+            "wrapU": "repeat",
+            "wrapV": "repeat",
+            "anisotropy": 1,
+            "mipBias": 0
+          }
         }
       },
       "geometry": {
@@ -5016,8 +8036,25 @@
         "pressureOpacityRange": [
           1,
           1
-        ]
+        ],
+        "m11Compatibility": false,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
+        ],
+        "ribbonUvStyle": "stretch",
+        "ribbonOffsetInTexcoord1": false
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 48,
       "tags": [
         "experimental"
       ],
@@ -5053,8 +8090,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 51,
       "tags": [
         "experimental"
       ],
@@ -5090,8 +8142,23 @@
         "pressureOpacityRange": [
           1,
           1
+        ],
+        "m11Compatibility": true,
+        "particleRate": 1,
+        "sprayRateMultiplier": 1,
+        "particleSpeed": 0,
+        "particleInitialRotationRange": 0,
+        "particleRandomizeAlpha": false,
+        "particleSizeVariance": 0,
+        "particlePositionVariance": 0,
+        "particleRotationVariance": 360,
+        "particleSizeRatio": [
+          1,
+          1
         ]
       },
+      "catalogSection": "experimental",
+      "catalogOrder": 52,
       "tags": [
         "experimental"
       ],

@@ -10,7 +10,10 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "assets:brushes:mirror": "node scripts/sync-icosa-brush-assets.mjs",
     "dev": "iwsdk dev up --open --foreground",
+    "dev:http": "vite --mode http --host 127.0.0.1 --port 8081 --open false --force",
+    "dev:http:mirror": "npm run assets:brushes:mirror && vite --mode mirror-http --host 127.0.0.1 --port 8081 --open false --force",
     "dev:runtime": "vite",
     "dev:down": "iwsdk dev down",
     "dev:status": "iwsdk dev status",
@@ -20,11 +23,14 @@
     "check:imports": "node scripts/check-imports.mjs",
     "extract:brush-assets": "node scripts/extract-brush-assets.mjs",
     "check:features": "node scripts/check-feature-flags.mjs",
-    "check": "npm run typecheck && npm run check:imports && npm run check:features && npm test",
+    "check": "npm run typecheck && npm run check:imports && npm run check:features && npm run test:brush-images && npm test",
     "test": "vitest run",
+    "test:brush-images": "node --test scripts/compare-brush-images.node-test.mjs",
+    "test:browser:materials": "node scripts/browser-material-smoke.mjs",
     "test:browser": "node scripts/runtime-check.mjs browser",
     "test:xr": "node scripts/runtime-check.mjs xr",
     "build": "vite build",
+    "build:mirror": "npm run assets:brushes:mirror && vite build --mode mirror",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -33,7 +39,9 @@
     "@pmndrs/uikit-horizon": "^1.0.74",
     "@pmndrs/uikit-lucide": "^1.0.74",
     "peerjs": "^1.5.5",
-    "three": "npm:super-three@0.181.0"
+    "three": "npm:super-three@0.181.0",
+    "three-icosa": "https://github.com/icosa-foundation/three-icosa/archive/18682538402ecf8470c4eee91f817ca6093acfa2.tar.gz",
+    "three-tiltloader": "https://github.com/icosa-foundation/three-tiltloader/archive/045117ab4f9dac540c9d76aa57f3ab7e04367da8.tar.gz"
   },
   "devDependencies": {
     "@iwsdk/cli": "0.4.2",
@@ -43,6 +51,7 @@
     "@meta-quest/hzdb": "^1.0.0",
     "@types/three": "*",
     "sharp": "^0.34.5",
+    "playwright": "^1.61.1",
     "typescript": "^5.5.0",
     "vite": "^7.1.4",
     "vite-plugin-mkcert": "^1.17.0",

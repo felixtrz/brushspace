@@ -76,14 +76,95 @@ export const OPEN_BRUSH_MINIMUM_MOVE_METERS = 5e-4;
 export const OPEN_BRUSH_SOLID_ASPECT_RATIO = 0.2;
 export const OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS = 0.0015;
 export const OPEN_BRUSH_TUBE_DEFAULT_SOLID_MIN_LENGTH_METERS = 0.002;
+export const OPEN_BRUSH_PRESSURE_SMOOTH_WINDOW_METERS = 0.2;
+export const OPEN_BRUSH_M11_PRESSURE_SMOOTH_WINDOW_METERS = 0.1;
+export const OPEN_BRUSH_GENIUS_PARTICLE_INTERVAL_METERS = 0.0025;
+export const OPEN_BRUSH_PRINT3D_RING_INTERVAL_METERS = 0.005;
+export const OPEN_BRUSH_PRINT3D_MIN_POINTER_INTERVAL_METERS = 0.001;
+export const OPEN_BRUSH_PRINT3D_MAX_POINTER_INTERVAL_METERS = 0.05;
 
 export type StrokeSampleDecision = "ignore" | "extend" | "keep";
+
+export function shouldDiscardGeneratedStroke(indexCount: number): boolean {
+  return !Number.isFinite(indexCount) || indexCount <= 0;
+}
+
+export function resolveGeneratorSolidMinLengthMeters(options: {
+  generatorClass?: string;
+  descriptorValue?: number;
+  geometryFamily?: string;
+}): number {
+  if (options.generatorClass?.startsWith("QuadStrip") === true) {
+    return OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS;
+  }
+  if (
+    typeof options.descriptorValue === "number" &&
+    Number.isFinite(options.descriptorValue) &&
+    options.descriptorValue > 0
+  ) {
+    return options.descriptorValue;
+  }
+  if (options.generatorClass) {
+    return OPEN_BRUSH_TUBE_DEFAULT_SOLID_MIN_LENGTH_METERS;
+  }
+  return options.geometryFamily === "ribbon" ||
+    options.geometryFamily === "emissive"
+    ? OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS
+    : OPEN_BRUSH_TUBE_DEFAULT_SOLID_MIN_LENGTH_METERS;
+}
+
+export function shouldSmoothStrokeSamplingPressure(
+  generatorClass: string | undefined,
+): boolean {
+  return (
+    generatorClass !== "SprayBrush" &&
+    generatorClass !== "GeniusParticlesBrush"
+  );
+}
+
+export function shouldZeroInitialM11SamplingPressure(
+  generatorClass: string | undefined,
+): boolean {
+  return (
+    generatorClass === "FlatGeometryBrush" ||
+    generatorClass === "TubeBrush" ||
+    generatorClass === "SquareBrush" ||
+    generatorClass === "ThickGeometryBrush" ||
+    generatorClass === "PrintableBrush" ||
+    generatorClass === "Square3DPrintBrush" ||
+    generatorClass === "HullBrush" ||
+    generatorClass === "ConcaveHullBrush"
+  );
+}
+
+export function resolveDistanceSmoothedPressure(options: {
+  previousPressure: number;
+  pressure: number;
+  distanceMeters: number;
+  windowMeters?: number;
+}): number {
+  const previousPressure = Math.min(1, Math.max(0, options.previousPressure));
+  const pressure = Math.min(1, Math.max(0, options.pressure));
+  const distanceMeters = Math.max(0, options.distanceMeters);
+  const windowMeters =
+    typeof options.windowMeters === "number" &&
+    Number.isFinite(options.windowMeters) &&
+    options.windowMeters > 0
+      ? options.windowMeters
+      : OPEN_BRUSH_PRESSURE_SMOOTH_WINDOW_METERS;
+  const retained = Math.pow(0.1, distanceMeters / windowMeters);
+  return retained * previousPressure + (1 - retained) * pressure;
+}
 
 export function resolveStrokeSpawnIntervalMeters(options: {
   brushSize: number;
   pressure: number;
   pressureSizeMin?: number;
   solidMinLengthMeters?: number;
+  generatorClass?: string;
+  sprayRateMultiplier?: number;
+  particleRate?: number;
+  localUnitsPerMeter?: number;
 }): number {
   const pressure = Math.min(1, Math.max(0, options.pressure));
   const pressureSizeMin =
@@ -100,7 +181,50 @@ export function resolveStrokeSpawnIntervalMeters(options: {
   const pressuredSize =
     Math.max(0, options.brushSize) *
     (pressureSizeMin + (1 - pressureSizeMin) * pressure);
+  if (
+    options.generatorClass === "SprayBrush" ||
+    options.generatorClass === "MidpointPlusLifetimeSprayBrush"
+  ) {
+    const sprayRate = normalizePositiveSamplingValue(
+      options.sprayRateMultiplier,
+    );
+    return pressuredSize / sprayRate;
+  }
+  if (options.generatorClass === "GeniusParticlesBrush") {
+    const particleRate = normalizePositiveSamplingValue(options.particleRate);
+    const localUnitsPerMeter = normalizePositiveSamplingValue(
+      options.localUnitsPerMeter,
+    );
+    return (
+      (OPEN_BRUSH_GENIUS_PARTICLE_INTERVAL_METERS * localUnitsPerMeter) /
+      particleRate
+    );
+  }
+  if (options.generatorClass === "Square3DPrintBrush") {
+    const localUnitsPerMeter = normalizePositiveSamplingValue(
+      options.localUnitsPerMeter,
+    );
+    return Math.min(
+      OPEN_BRUSH_PRINT3D_MAX_POINTER_INTERVAL_METERS * localUnitsPerMeter,
+      Math.max(
+        OPEN_BRUSH_PRINT3D_MIN_POINTER_INTERVAL_METERS * localUnitsPerMeter,
+        OPEN_BRUSH_PRINT3D_RING_INTERVAL_METERS,
+      ),
+    );
+  }
+  if (
+    options.generatorClass === "HullBrush" ||
+    options.generatorClass === "ConcaveHullBrush"
+  ) {
+    return solidMinLength;
+  }
   return solidMinLength + pressuredSize * OPEN_BRUSH_SOLID_ASPECT_RATIO;
+}
+
+function normalizePositiveSamplingValue(value: number | undefined): number {
+  return typeof value === "number" && Number.isFinite(value) && value > 0
+    ? value
+    : 1;
 }
 
 export function resolveStrokeSampleDecision(

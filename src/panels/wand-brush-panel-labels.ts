@@ -80,7 +80,9 @@ export function resolveWandBrushPanelLabels(
     wandBrushSize: sizeLabel,
     sizeDown: input.eraserActive ? "Radius -" : "Size -",
     sizeUp: input.eraserActive ? "Radius +" : "Size +",
-    warning: activeBrush?.unsupportedReason ?? "Ready",
+    warning:
+      activeBrush?.unsupportedReason ??
+      "Renderer eligible; visual fidelity unvalidated",
   };
 }
 

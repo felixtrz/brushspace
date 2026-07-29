@@ -28,8 +28,16 @@ import {
 import {
   createSketchDocument,
   createSketchLayer,
+  type SketchDocument,
   type SketchLayer,
 } from "../sketch/document.js";
+import {
+  createDefaultSketchLister,
+  downloadRemoteTiltBytes,
+  type SketchLister,
+} from "../sketch/icosa-gallery.js";
+import { readTiltFile } from "../sketch/tilt-file.js";
+import { convertTiltBrushUnitsToMeters } from "../sketch/tilt-brush-units.js";
 import type { StrokeData } from "../types.js";
 import {
   applyUIKitProperties,
@@ -44,6 +52,8 @@ const WELCOME_SKETCH_ID = "welcome-sketch";
 const WELCOME_THUMB_URL = assetUrl("/openbrush/intro/thumbnail.png");
 const BLANK_THUMB_URL = assetUrl("/openbrush/blank-icon.png");
 const CELLS_PER_PAGE = 6;
+// How many curated sketches to pull from the default lister for the gallery.
+const REMOTE_PAGE_SIZE = 24;
 // Square, low-res thumbnails so captures stay cheap in-headset.
 const THUMBNAIL_SIZE = 256;
 // Staggered stroke reveal/hide like the original's sketch transitions.
@@ -54,6 +64,8 @@ interface GalleryEntry {
   id: string;
   name: string;
   thumbUrl: string;
+  /** Present for remote (Icosa Gallery) sketches: the `.tilt` download URL. */
+  tiltUrl?: string;
 }
 
 interface TransitionItem {
@@ -82,10 +94,15 @@ export class SketchLibrarySystem extends createSystem({
   settings: { required: [SettingsState] },
 }) {
   private store: SketchCatalogStore = createStore();
+  // The default lister: curated Icosa Gallery sketches ordered by "best".
+  private lister: SketchLister = createDefaultSketchLister();
   private galleryEntity?: Entity;
   private galleryHand: "left" | "right" = "left";
   private galleryDocument?: UIKitDocument;
   private entries: GalleryEntry[] = [];
+  private localEntries: GalleryEntry[] = [];
+  private remoteEntries: GalleryEntry[] = [];
+  private remoteRequested = false;
   private page = 0;
   private appliedGallery = "";
   private blobUrls: string[] = [];
@@ -292,6 +309,27 @@ export class SketchLibrarySystem extends createSystem({
       });
       return;
     }
+    if (entry.tiltUrl) {
+      // Curated Icosa sketch: download the .tilt and open it as a fresh,
+      // unsaved sketch (activeSketchId cleared) so Save creates the user's own
+      // local copy rather than trying to overwrite the remote asset.
+      appState.setValue(OpenBrushAppState, "toolStatus", `loading "${entry.name}"`);
+      void downloadRemoteTiltBytes(entry.tiltUrl)
+        .then((bytes) => {
+          // Native Tilt Brush files are authored in Tilt Brush units
+          // (decimetres); convert to Brushspace metres like Open Brush's canvas
+          // does, otherwise the sketch spawns 10x too large and reads as empty.
+          const document = convertTiltBrushUnitsToMeters(readTiltFile(bytes));
+          this.openDocument(document, "", entry.name);
+        })
+        .catch((error) => {
+          appState.setValue(PersistenceState, "status", "load-failed");
+          appState.setValue(PersistenceState, "error", String(error));
+          appState.setValue(OpenBrushAppState, "toolStatus", "load failed");
+          this.busy = false;
+        });
+      return;
+    }
     void this.store
       .load(entry.id)
       .then((record) => {
@@ -299,39 +337,62 @@ export class SketchLibrarySystem extends createSystem({
           this.busy = false;
           return;
         }
-        const document = readSketchCatalogRecordDocument(record);
-        this.transitionOutStrokes(() => {
-          this.getIntroSketchSystem()?.setSketchVisible(false);
-          const authoring = this.world.getSystem(StrokeAuthoringSystem);
-          const spawned: Entity[] = [];
-          for (const strokeData of document.strokes) {
-            const entity = authoring?.spawnStrokeFromData(
-              strokeData as StrokeData,
-              false,
-            );
-            if (entity) {
-              spawned.push(entity);
-            }
-          }
-          appState.setValue(PersistenceState, "activeSketchId", record.id);
-          appState.setValue(PersistenceState, "activeSketchName", record.name);
-          appState.setValue(PersistenceState, "status", "loaded");
-          appState.setValue(PersistenceState, "lastLoadedAtMs", Date.now());
-          appState.setValue(
-            PersistenceState,
-            "loadRevision",
-            Number(appState.getValue(PersistenceState, "loadRevision")) + 1,
-          );
-          appState.setValue(OpenBrushAppState, "mode", "ready");
-          this.world.getSystem(AudioFeedbackSystem)?.playSound("load-sketch");
-          this.transitionInStrokes(spawned, () => {
-            this.busy = false;
-          });
-        });
+        this.openDocument(
+          readSketchCatalogRecordDocument(record),
+          record.id,
+          record.name,
+        );
       })
       .catch(() => {
         this.busy = false;
       });
+  }
+
+  /**
+   * Runs the shared open path: staggered clear of the current strokes, then
+   * spawns the document's strokes with the staggered reveal. An empty `id`
+   * marks the sketch as unsaved (remote/remixed) so a later Save forks a new
+   * local record.
+   */
+  private openDocument(
+    document: SketchDocument,
+    id: string,
+    name: string,
+  ): void {
+    const appState = this.getAppState();
+    if (!appState) {
+      this.busy = false;
+      return;
+    }
+    this.transitionOutStrokes(() => {
+      this.getIntroSketchSystem()?.setSketchVisible(false);
+      const authoring = this.world.getSystem(StrokeAuthoringSystem);
+      const spawned: Entity[] = [];
+      for (const strokeData of document.strokes) {
+        const entity = authoring?.spawnStrokeFromData(
+          strokeData as StrokeData,
+          false,
+        );
+        if (entity) {
+          spawned.push(entity);
+        }
+      }
+      appState.setValue(PersistenceState, "activeSketchId", id);
+      appState.setValue(PersistenceState, "activeSketchName", name);
+      appState.setValue(PersistenceState, "status", "loaded");
+      appState.setValue(PersistenceState, "error", "");
+      appState.setValue(PersistenceState, "lastLoadedAtMs", Date.now());
+      appState.setValue(
+        PersistenceState,
+        "loadRevision",
+        Number(appState.getValue(PersistenceState, "loadRevision")) + 1,
+      );
+      appState.setValue(OpenBrushAppState, "mode", "ready");
+      this.world.getSystem(AudioFeedbackSystem)?.playSound("load-sketch");
+      this.transitionInStrokes(spawned, () => {
+        this.busy = false;
+      });
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -437,12 +498,16 @@ export class SketchLibrarySystem extends createSystem({
         });
       }
     }
-    setText(
-      "gallery-label",
-      this.entries.length === 1
-        ? "Welcome Sketch"
-        : `${this.entries.length - 1} saved`,
-    );
+    const savedCount = Math.max(0, this.localEntries.length - 1);
+    const curatedCount = this.remoteEntries.length;
+    const parts: string[] = [];
+    if (savedCount > 0) {
+      parts.push(`${savedCount} saved`);
+    }
+    if (curatedCount > 0) {
+      parts.push(`${curatedCount} curated`);
+    }
+    setText("gallery-label", parts.length > 0 ? parts.join(" · ") : "Welcome Sketch");
   }
 
   private bindGallery(document: UIKitDocument): void {
@@ -497,8 +562,42 @@ export class SketchLibrarySystem extends createSystem({
         thumbUrl: await this.thumbUrlFor(item),
       });
     }
-    this.entries = entries;
+    this.localEntries = entries;
+    this.rebuildEntries();
+    // Curated Icosa sketches load lazily and degrade gracefully; a slow or
+    // failed network never blocks the local gallery.
+    if (!this.remoteRequested) {
+      this.remoteRequested = true;
+      void this.refreshRemoteEntries();
+    }
+  }
+
+  /** Combines local and remote entries into the paged gallery list. */
+  private rebuildEntries(): void {
+    this.entries = [...this.localEntries, ...this.remoteEntries];
     this.appliedGallery = "";
+  }
+
+  /**
+   * Pulls the default lister's curated sketches and appends them to the
+   * gallery. Remote thumbnails are plain CORS-enabled URLs, so unlike local
+   * captures they need no blob bookkeeping. Failures leave the gallery on its
+   * local entries.
+   */
+  private async refreshRemoteEntries(): Promise<void> {
+    try {
+      const page = await this.lister.listPage();
+      this.remoteEntries = page.entries.map((entry) => ({
+        id: `icosa:${entry.assetId}`,
+        name: entry.name,
+        thumbUrl: entry.thumbnailUrl || BLANK_THUMB_URL,
+        tiltUrl: entry.tiltUrl,
+      }));
+      this.rebuildEntries();
+    } catch {
+      // Offline or blocked: keep the local-only gallery.
+      this.remoteEntries = [];
+    }
   }
 
   private async thumbUrlFor(item: SketchCatalogListItem): Promise<string> {

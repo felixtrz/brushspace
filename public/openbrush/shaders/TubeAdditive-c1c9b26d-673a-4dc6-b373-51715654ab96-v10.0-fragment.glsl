@@ -1,3 +1,4 @@
+#define TB_EMISSION_GAIN 0.5
 // Copyright 2020 The Tilt Brush Authors
 //
 // Licensed under the Apache License, Version 2.0 (the "License");

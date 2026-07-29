@@ -24,7 +24,7 @@ describe("Phase A wand brush panel labels", () => {
     expect(labels.wandBrushSize).toBe("Size 50% | 1.1 cm");
     expect(labels.sizeDown).toBe("Size -");
     expect(labels.sizeUp).toBe("Size +");
-    expect(labels.warning).toBe("Ready");
+    expect(labels.warning).toBe("Renderer eligible; visual fidelity unvalidated");
   });
 
   it("labels eraser sizing as radius controls", () => {

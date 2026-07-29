@@ -5,6 +5,7 @@ import {
   OPEN_BRUSH_DEFAULT_SIZE01,
   OPEN_BRUSH_DEFAULT_STARTUP_BRUSH_SIZE_RANGE,
   OPEN_BRUSH_DEFAULT_STARTUP_LIVE_BRUSH_SIZE,
+  OPEN_BRUSH_DEFAULT_STARTUP_SCREENSHOT_BRUSH_SIZE,
   OPEN_BRUSH_IWSDK_BRUSH_SIZE_SCALE,
   OPEN_BRUSH_UNITS_TO_METERS,
   brushSize01ToLiveBrushSize,
@@ -41,6 +42,9 @@ describe("Open Brush brush size", () => {
         OPEN_BRUSH_DEFAULT_STARTUP_BRUSH_SIZE_RANGE,
       ),
     ).toBeCloseTo(0.1125);
+    expect(OPEN_BRUSH_DEFAULT_STARTUP_SCREENSHOT_BRUSH_SIZE).toBeCloseTo(
+      0.1125,
+    );
     // Light at the default slider is a ~1.1cm-wide stroke, as in Open Brush.
     expect(OPEN_BRUSH_DEFAULT_STARTUP_LIVE_BRUSH_SIZE).toBeCloseTo(0.01125, 6);
     expect(

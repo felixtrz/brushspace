@@ -11,16 +11,25 @@ import {
   OpenBrushBrushPage,
   OpenBrushPanelAttachment,
 } from "../components/core.js";
-import { selectableOpenBrushes } from "../brushes/brush-catalog.js";
+import {
+  OPEN_BRUSH_DEFAULT_BRUSH_GUID,
+  openBrushInventory,
+  selectableOpenBrushes,
+  setExperimentalBrushesEnabled,
+  visibleOpenBrushes,
+} from "../brushes/brush-catalog.js";
 import {
   applyUIKitProperties,
   clearUIKitInteractionStateExcept,
 } from "../panels/uikit-interaction.js";
-import type { BrushInventoryEntry } from "../brushes/brush-inventory.js";
+import {
+  findBrushByGuid,
+  type BrushInventoryEntry,
+} from "../brushes/brush-inventory.js";
 import { assetUrl } from "../app/asset-url.js";
 
 const GRID_COLUMNS = 4;
-const GRID_ROWS = 4;
+const GRID_ROWS = 3;
 const CELLS_PER_PAGE = GRID_COLUMNS * GRID_ROWS;
 const BLANK_ICON_SRC = assetUrl("/openbrush/blank-icon.png");
 // Matches the .brush-cell styles in ui/wand-brush.uikitml; the selected cell
@@ -30,6 +39,8 @@ const CELL_BORDER_SELECTED = "#ffffff";
 const CELL_BORDER_EMPTY = "rgba(0, 0, 0, 0)";
 const CELL_BACKGROUND_DEFAULT = "rgba(0, 0, 0, 0.02)";
 const CELL_BACKGROUND_SELECTED = "rgba(255, 255, 255, 0.28)";
+const CELL_BORDER_UNVERIFIED = "rgba(255, 170, 70, 0.8)";
+const CELL_BACKGROUND_UNVERIFIED = "rgba(255, 130, 30, 0.08)";
 
 interface UIKitStyleElement {
   setProperties(properties: Record<string, unknown>): void;
@@ -38,7 +49,7 @@ interface UIKitStyleElement {
 
 /**
  * Drives the paginated brush selection page (ui/wand-brush.uikitml): a 4x4
- * grid of brush icons with prev/next paging, mirroring Open Brush's brush
+ * 4x3 grid of brush icons with prev/next paging, mirroring Open Brush's brush
  * panel. Unlike the color picker, this panel is a regular UIKit panel.
  */
 export class BrushPageSystem extends createSystem({
@@ -48,6 +59,7 @@ export class BrushPageSystem extends createSystem({
   brushSettings: { required: [BrushSettings] },
 }) {
   private page = 0;
+  private experimentalEnabled = false;
   private boundPanelIndex = -1;
   private readonly cellEntries: Array<BrushInventoryEntry | undefined> =
     new Array(CELLS_PER_PAGE).fill(undefined);
@@ -58,7 +70,7 @@ export class BrushPageSystem extends createSystem({
   private appliedMarkPage = -1;
 
   private get pageCount(): number {
-    return Math.max(1, Math.ceil(selectableOpenBrushes.length / CELLS_PER_PAGE));
+    return Math.max(1, Math.ceil(visibleOpenBrushes.length / CELLS_PER_PAGE));
   }
 
   update() {
@@ -103,7 +115,7 @@ export class BrushPageSystem extends createSystem({
       cell?.addEventListener("click", () => {
         clearUIKitInteractionStateExcept(document, cell);
         const entry = this.cellEntries[index];
-        if (entry) {
+        if (entry?.pickerEnabled) {
           settingsEntity.setValue(BrushSettings, "brushGuid", entry.guid);
         }
       });
@@ -122,6 +134,29 @@ export class BrushPageSystem extends createSystem({
       clearUIKitInteractionStateExcept(document, nextButton);
       this.page = (this.page + 1) % this.pageCount;
     });
+    const experimentalButton = document.getElementById(
+      "brush-experimental-toggle",
+    ) as UIKitStyleElement | null;
+    experimentalButton?.addEventListener("click", () => {
+      clearUIKitInteractionStateExcept(document, experimentalButton);
+      this.experimentalEnabled = !this.experimentalEnabled;
+      setExperimentalBrushesEnabled(this.experimentalEnabled);
+      this.page = 0;
+      const activeGuid = String(settingsEntity.getValue(BrushSettings, "brushGuid"));
+      if (!selectableOpenBrushes.some((entry) => entry.guid === activeGuid)) {
+        settingsEntity.setValue(
+          BrushSettings,
+          "brushGuid",
+          OPEN_BRUSH_DEFAULT_BRUSH_GUID,
+        );
+      }
+      experimentalButton.setProperties({
+        text: this.experimentalEnabled
+          ? "Experimental: On"
+          : "Experimental: Off",
+      });
+      this.applyPage(document);
+    });
     this.applyPage(document);
   }
 
@@ -131,7 +166,7 @@ export class BrushPageSystem extends createSystem({
     this.appliedSelectionPage = -1;
     const start = this.page * CELLS_PER_PAGE;
     for (let index = 0; index < CELLS_PER_PAGE; index += 1) {
-      const entry = selectableOpenBrushes[start + index];
+      const entry = visibleOpenBrushes[start + index];
       this.cellEntries[index] = entry;
       const icon = document.getElementById(
         `brush-icon-${index}`,
@@ -140,6 +175,7 @@ export class BrushPageSystem extends createSystem({
         src: entry?.buttonIconFile
           ? assetUrl(`/openbrush/icons/${entry.buttonIconFile}`)
           : BLANK_ICON_SRC,
+        opacity: entry?.pickerEnabled ? 1 : 0.3,
       });
     }
   }
@@ -170,14 +206,21 @@ export class BrushPageSystem extends createSystem({
         continue;
       }
       const selected = entry.guid === activeGuid;
+      const enabled = entry.pickerEnabled;
       // Click restyles land while the cell is still hovered; the helper
       // repairs the conditional reactivity that a plain setProperties would
       // orphan (the stuck grey tile bug).
       applyUIKitProperties(cell, {
-        borderColor: selected ? CELL_BORDER_SELECTED : CELL_BORDER_DEFAULT,
+        borderColor: selected
+          ? CELL_BORDER_SELECTED
+          : enabled
+            ? CELL_BORDER_DEFAULT
+            : CELL_BORDER_UNVERIFIED,
         backgroundColor: selected
           ? CELL_BACKGROUND_SELECTED
-          : CELL_BACKGROUND_DEFAULT,
+          : enabled
+            ? CELL_BACKGROUND_DEFAULT
+            : CELL_BACKGROUND_UNVERIFIED,
       });
     }
   }
@@ -186,13 +229,20 @@ export class BrushPageSystem extends createSystem({
     const activeGuid = String(settingsEntity.getValue(BrushSettings, "brushGuid"));
     if (activeGuid !== this.appliedNameGuid) {
       this.appliedNameGuid = activeGuid;
-      const activeEntry = selectableOpenBrushes.find(
-        (entry) => entry.guid === activeGuid,
-      );
+      const activeEntry = findBrushByGuid(openBrushInventory, activeGuid);
       const nameElement = document.getElementById(
         "brush-active-name",
       ) as UIKitStyleElement | null;
       nameElement?.setProperties({ text: activeEntry?.name ?? "" });
+      const confidenceElement = document.getElementById(
+        "brush-active-confidence",
+      ) as UIKitStyleElement | null;
+      confidenceElement?.setProperties({
+        text:
+          activeEntry?.fidelityConfidence === "likely-mostly-correct"
+            ? "Likely mostly correct"
+            : "Unverified or likely substantially wrong",
+      });
     }
     if (this.page !== this.appliedMarkPage) {
       this.appliedMarkPage = this.page;

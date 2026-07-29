@@ -1,0 +1,16 @@
+import { describe, expect, it } from "vitest";
+
+import reference from "../../open-brush-reference.json";
+
+describe("Open Brush reference pin", () => {
+  it("pins the audited upstream source revision", () => {
+    expect(reference).toEqual({
+      schemaVersion: 1,
+      repository: "https://github.com/icosa-foundation/open-brush.git",
+      commit: "4786d55ad398bfc957d8e8eb26438920026aeaf6",
+      exportManifest: "Support/exportManifest.json",
+      standardBrushManifest: "Assets/Manifest.asset",
+      experimentalBrushManifest: "Assets/Manifest_Experimental.asset",
+    });
+  });
+});

@@ -7,6 +7,7 @@ import { createReferenceMediaAsset, toMediaReference } from "./media-assets.js";
 import { createEmptyStrokeData } from "../types.js";
 
 const LIGHT_BRUSH_GUID = "2241cd32-8ba2-48a5-9ee7-2caef7e9ed62";
+const MYLAR_TUBE_GUID = "8e58ceea-7830-49b4-aba9-6215104ab52a";
 
 describe("Open Brush GLB export", () => {
   it("exports a valid binary GLB with stroke geometry and metadata extras", () => {
@@ -43,8 +44,14 @@ describe("Open Brush GLB export", () => {
     expect(primitive.attributes).toEqual({
       POSITION: expect.any(Number),
       NORMAL: expect.any(Number),
+      TANGENT: expect.any(Number),
       COLOR_0: expect.any(Number),
       TEXCOORD_0: expect.any(Number),
+    });
+    const tangentAccessor = parsed.json.accessors[primitive.attributes.TANGENT];
+    expect(tangentAccessor).toMatchObject({
+      type: "VEC4",
+      count: parsed.json.accessors[primitive.attributes.POSITION].count,
     });
     expect(primitive.extras).toMatchObject({
       openBrushBrushGuid: PHASE1_FIXTURE_BRUSH_GUID,
@@ -106,6 +113,54 @@ describe("Open Brush GLB export", () => {
 
     expect(colorAccessor.type).toBe("VEC4");
     expect(view.getFloat32(colorOffset + 3 * 4, true)).toBeCloseTo(0.75);
+  });
+
+  it("preserves packed TubeBrush UV0.z as a custom GLB attribute", () => {
+    const result = exportSketchDocumentToGlb(
+      createSketchDocument({
+        metadata: { source: "runtime" },
+        layers: [createSketchLayer({ id: 0, name: "Sketch" })],
+        strokes: [
+          createEmptyStrokeData({
+            guid: "radius-packed-tube",
+            brushGuid: MYLAR_TUBE_GUID,
+            brushSize: 0.2,
+            color: [1, 1, 1, 1],
+            layerIndex: 0,
+            controlPoints: [
+              {
+                position: [0, 0, 0],
+                orientation: [0, 0, 0, 1],
+                pressure: 1,
+                timestampMs: 0,
+              },
+              {
+                position: [1, 0, 0],
+                orientation: [0, 0, 0, 1],
+                pressure: 1,
+                timestampMs: 16,
+              },
+            ],
+          }),
+        ],
+      }),
+    );
+    const parsed = parseGlb(result.bytes);
+    const attributes = parsed.json.meshes[0].primitives[0].attributes;
+    const standardUv = parsed.json.accessors[attributes.TEXCOORD_0];
+    const packedUv = parsed.json.accessors[attributes._TB_TEXCOORD_0];
+    const bufferView = parsed.json.bufferViews[packedUv.bufferView];
+    const offset = bufferView.byteOffset + (packedUv.byteOffset ?? 0);
+    const view = new DataView(
+      parsed.binBytes.buffer,
+      parsed.binBytes.byteOffset,
+      parsed.binBytes.byteLength,
+    );
+
+    expect(standardUv.type).toBe("VEC2");
+    expect(packedUv.type).toBe("VEC3");
+    expect(packedUv.count).toBe(standardUv.count);
+    expect(view.getFloat32(offset + 2 * 4, true)).toBeCloseTo(0.1);
   });
 
   it("keeps layer roots and buffer views internally consistent", () => {

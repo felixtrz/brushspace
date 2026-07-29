@@ -8,9 +8,27 @@ import {
   OPEN_BRUSH_DEFAULT_BRUSH_GUID,
   initialOpenBrushIndex,
   selectableOpenBrushes,
+  setExperimentalBrushesEnabled,
+  visibleOpenBrushes,
 } from "./brush-catalog.js";
 
 describe("Open Brush brush catalog", () => {
+  it("keeps the full catalog visible while enabling only likely-mostly-correct brushes", () => {
+    setExperimentalBrushesEnabled(false);
+    expect(visibleOpenBrushes).toHaveLength(48);
+    expect(selectableOpenBrushes).toHaveLength(48);
+    setExperimentalBrushesEnabled(true);
+    expect(visibleOpenBrushes).toHaveLength(95);
+    expect(selectableOpenBrushes).toHaveLength(95);
+    expect(
+      visibleOpenBrushes
+        .slice(48, 60)
+        .every((entry) => entry.catalogSection === "experimental"),
+    ).toBe(true);
+    expect(selectableOpenBrushes.every((entry) => entry.pickerEnabled)).toBe(true);
+    setExperimentalBrushesEnabled(false);
+  });
+
   it("starts on the upstream Light brush instead of the Marker fixture", () => {
     const defaultBrush = selectableOpenBrushes[initialOpenBrushIndex];
 

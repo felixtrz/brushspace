@@ -1,0 +1,3 @@
+[submodule "vendor/icosa-sketch-assets"]
+	path = vendor/icosa-sketch-assets
+	url = https://github.com/icosa-foundation/icosa-sketch-assets.git

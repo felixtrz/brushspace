@@ -13,9 +13,10 @@ import {
   Quaternion,
   Transform,
   Vector3,
+  VisibilityState,
   createSystem,
 } from "@iwsdk/core";
-import type { Entity, Material } from "@iwsdk/core";
+import type { Entity, Material, Texture } from "@iwsdk/core";
 
 import {
   BrushPointer,
@@ -36,6 +37,7 @@ import { initialLoad } from "../app/initial-load.js";
 import { openBrushInventory } from "../brushes/brush-catalog.js";
 import {
   findBrushByGuid,
+  type BrushGeometryParams,
   type BrushGeometryFamily,
   type BrushInventoryEntry,
   type BrushPressureOpacityRange,
@@ -43,6 +45,7 @@ import {
 } from "../brushes/brush-inventory.js";
 import {
   createBrushGeometryArrays,
+  generateBrushGeometry,
   generateBrushGeometryInto,
   type BrushGeometryArrays,
 } from "../brushes/brush-geometry.js";
@@ -52,15 +55,44 @@ import {
 } from "../brushes/brush-materials.js";
 import {
   applyBrushShaderAttributeAliases,
+  applyBrushShaderSupplementalAttributes,
   openBrushShaderLibrary,
 } from "../brushes/brush-shader-library.js";
 import {
+  BRUSH_VISUAL_CONFORMANCE_PREFIX,
+  createOpenBrushScreenshotCamera,
+  OPEN_BRUSH_SCREENSHOT_SIZE,
+  runBumpVisualConformance,
+  runBrushGeometryVisualConformance,
+  showBumpVisualConformance,
+  showBrushGeometryVisualConformance,
+} from "../brushes/brush-visual-conformance.js";
+import {
+  createOpenBrushScreenshotControlPoints,
+  OPEN_BRUSH_SCREENSHOT_SHADER_TIME_SECONDS,
+} from "../brushes/brush-conformance-fixtures.js";
+import { openBrushShaderCompatibility } from "../brushes/brush-shader-compatibility.js";
+import { matchesBrushTextureImporterSettings } from "../brushes/brush-texture-settings.js";
+import {
+  hasBrushMainTextureCutout,
+  hasTubeToonInvertedPassContract,
+} from "../brushes/brush-shader-materials.js";
+import {
+  applyBrushRenderGroups,
+  createBrushRenderMaterial,
+} from "../brushes/brush-render-material.js";
+import {
   createMirroredStrokeDataX,
+  resolveDistanceSmoothedPressure,
+  resolveGeneratorSolidMinLengthMeters,
+  shouldSmoothStrokeSamplingPressure,
+  shouldDiscardGeneratedStroke,
+  shouldZeroInitialM11SamplingPressure,
   resolveStrokeSampleDecision,
   OPEN_BRUSH_MINIMUM_MOVE_METERS,
   resolveStrokeSpawnIntervalMeters,
-  OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS,
-  OPEN_BRUSH_TUBE_DEFAULT_SOLID_MIN_LENGTH_METERS,
+  OPEN_BRUSH_PRESSURE_SMOOTH_WINDOW_METERS,
+  OPEN_BRUSH_M11_PRESSURE_SMOOTH_WINDOW_METERS,
   upsertTapeMeasureEndpoints,
   upsertStraightedgeEndpoint,
   writeGridSnappedPosition,
@@ -69,7 +101,9 @@ import {
   type StrokePointerFrame,
 } from "../strokes/stroke-authoring.js";
 import {
+  brushSize01ToLiveBrushSize,
   normalizeBrushSize,
+  OPEN_BRUSH_DEFAULT_STARTUP_SCREENSHOT_BRUSH_SIZE,
 } from "../brushes/brush-size.js";
 import { indexedTriangleGeometryIntersectsSphere } from "../strokes/geometry-intersections.js";
 import { isOpenBrushEraserHit } from "../strokes/stroke-eraser.js";
@@ -113,22 +147,6 @@ import { AudioFeedbackSystem } from "./audio-feedback-system.js";
 
 const MIN_SAMPLE_DISTANCE = 0.015;
 
-// QuadStripBrush uses its class constant; TubeBrush reads the descriptor's
-// m_SolidMinLengthMeters_PS.
-function resolveSolidMinLengthMeters(
-  brushEntry: BrushInventoryEntry | undefined,
-  geometryFamily: BrushGeometryFamily,
-): number {
-  if (geometryFamily === "tube") {
-    const descriptorValue = brushEntry?.geometryParams?.solidMinLengthMeters;
-    return typeof descriptorValue === "number" &&
-      Number.isFinite(descriptorValue) &&
-      descriptorValue > 0
-      ? descriptorValue
-      : OPEN_BRUSH_TUBE_DEFAULT_SOLID_MIN_LENGTH_METERS;
-  }
-  return OPEN_BRUSH_RIBBON_SOLID_MIN_LENGTH_METERS;
-}
 const GRID_SNAP_SIZE = 0.1;
 const LAZY_INPUT_RADIUS = 0.08;
 const STENCIL_FRONT_PLANE_Z = -1.2;
@@ -141,8 +159,15 @@ interface RuntimeStroke {
   mesh: Mesh;
   geometry: BufferGeometry;
   geometryFamily: BrushGeometryFamily;
+  geometryParams: BrushGeometryParams | undefined;
+  generatorClass: string | undefined;
   pressureSizeRange: BrushPressureSizeRange | undefined;
   pressureOpacityRange: BrushPressureOpacityRange | undefined;
+  deterministicParticleBirthTime: boolean;
+  particleKnotIndexOffset: number;
+  particleDistanceOffset: number;
+  particleBirthTimeOffsetSeconds: number;
+  geometryFinalized: boolean;
   toolId: OpenBrushToolId;
   groupId: number;
   samplingMode: OpenBrushToolSamplingMode;
@@ -156,6 +181,8 @@ interface RuntimeStroke {
   lastPosition: Vec3;
   /** Whether the most recent control point is a keeper (PointerScript semantics). */
   lastPointIsKeeper: boolean;
+  /** Smoothed pressure at the last keeper (Open Brush m_LastSpawnPressure). */
+  lastKeeperSmoothedPressure: number;
   /** Per-brush solid segment minimum length in meters. */
   solidMinLengthMeters: number;
   /** Reusable geometry storage (grown geometrically, written in place). */
@@ -232,7 +259,10 @@ export class StrokeAuthoringSystem extends createSystem({
   private previewBrushGuid = "";
   private readonly previewPointPool: ControlPoint[] = [];
   private readonly previewBirths: number[] = [];
+  private readonly previewSamplePosition: Vec3 = [0, 0, 0];
   private previewClock = 0;
+  private levelTimeOriginSeconds: number | undefined;
+  private currentLevelTimeSeconds = 0;
   private readonly previewWorldPosition = new Vector3();
   private readonly previewWorldQuaternion = new Quaternion();
   private readonly previewPoseQuaternion = new Quaternion();
@@ -246,12 +276,21 @@ export class StrokeAuthoringSystem extends createSystem({
   private consumedStrokeUndoRequestRevision = 0;
   private consumedStrokeRedoRequestRevision = 0;
   private eraseHoldErasedCount = 0;
+  private shaderMaterialsReady = false;
+  private xrShaderWarmupStarted = false;
 
   init() {
     let disposed = false;
     this.cleanupFuncs.push(() => {
       disposed = true;
     });
+    this.cleanupFuncs.push(
+      this.world.visibilityState.subscribe((state) => {
+        if (state === VisibilityState.Visible) {
+          void this.warmUpImmersiveShaders();
+        }
+      }),
+    );
     // The full-catalog warmup fetches tens of MB of shader textures, so it
     // waits out the landing-critical downloads (the intro sketch loads its
     // own brushes directly; the shader library cache dedups the overlap).
@@ -273,8 +312,70 @@ export class StrokeAuthoringSystem extends createSystem({
           return;
         }
         const loadedCount = materials.filter(Boolean).length;
+        const cullingFailures = shaderBrushes.flatMap((entry, index) => {
+          if (!entry.portRequired) {
+            return [];
+          }
+          const material = materials[index];
+          const expectedSide = entry.geometryParams?.renderBackfaces
+            ? DoubleSide
+            : FrontSide;
+          return material && material.side === expectedSide ? [] : [entry.name];
+        });
+        document.documentElement.dataset.brushCullingSettings =
+          cullingFailures.length === 0 ? "pass" : "fail";
+        if (cullingFailures.length > 0) {
+          console.error(
+            `[OpenBrushCulling] Required brush side mismatch: ${cullingFailures.join(", ")}`,
+          );
+        }
+        const cutoutBrushes = new Set(["SingleSided", "DoubleFlat"]);
+        const cutoutFailures = shaderBrushes.flatMap((entry, index) => {
+          if (!cutoutBrushes.has(entry.name)) {
+            return [];
+          }
+          const material = materials[index];
+          return material && hasBrushMainTextureCutout(material.fragmentShader)
+            ? []
+            : [entry.name];
+        });
+        document.documentElement.dataset.brushTextureCutouts =
+          cutoutFailures.length === 0 ? "pass" : "fail";
+        if (cutoutFailures.length > 0) {
+          console.error(
+            `[OpenBrushTextureCutout] Missing diffuse cutout logic: ${cutoutFailures.join(", ")}`,
+          );
+        }
+        const tubeToonIndex = shaderBrushes.findIndex(
+          (entry) => entry.name === "TubeToonInverted",
+        );
+        const tubeToonMaterial = materials[tubeToonIndex];
+        const tubeToonPassesReady = Boolean(
+          tubeToonMaterial &&
+            hasTubeToonInvertedPassContract(
+              tubeToonMaterial.vertexShader,
+              tubeToonMaterial.fragmentShader,
+            ),
+        );
+        document.documentElement.dataset.brushTubeToonInverted =
+          tubeToonPassesReady ? "pass" : "fail";
+        if (!tubeToonPassesReady) {
+          console.error(
+            "[OpenBrushTubeToonInverted] Missing brush-pass shader contract.",
+          );
+        }
         if (loadedCount > 0) {
-          await openBrushShaderLibrary.warmUp(this.renderer, this.scene, this.camera);
+          await openBrushShaderLibrary.warmUp(
+            this.renderer,
+            this.scene,
+            this.camera,
+            "browser",
+          );
+          this.runRequestedVisualConformance();
+        }
+        this.shaderMaterialsReady = true;
+        if (this.renderer.xr.isPresenting) {
+          await this.warmUpImmersiveShaders();
         }
         console.log(
           `OpenBrush brush shader materials ready: ${loadedCount}/${loads.length} supported brushes.`,
@@ -283,8 +384,350 @@ export class StrokeAuthoringSystem extends createSystem({
     });
   }
 
+  private async warmUpImmersiveShaders(): Promise<void> {
+    if (!this.shaderMaterialsReady || this.xrShaderWarmupStarted) {
+      return;
+    }
+    this.xrShaderWarmupStarted = true;
+    await openBrushShaderLibrary.warmUp(
+      this.renderer,
+      this.scene,
+      this.camera,
+      "immersive-xr",
+    );
+  }
+
+  private runRequestedVisualConformance(): void {
+    const mode = new URLSearchParams(window.location.search).get(
+      "visual-conformance",
+    );
+    if (
+      mode === "particle" ||
+      mode === "spray" ||
+      mode === "midpoint" ||
+      mode === "waveform" ||
+      mode === "double-tapered" ||
+      mode === "electricity" ||
+      mode === "disco" ||
+      mode === "light-wire" ||
+      mode === "hyper-grid" ||
+      mode === "square-paper" ||
+      mode === "thick-geometry" ||
+      mode === "hull" ||
+      mode === "diamond-hull" ||
+      mode === "smooth-hull" ||
+      mode === "concave-hull" ||
+      mode === "print3d" ||
+      mode === "oil-paint" ||
+      mode === "ink" ||
+      mode === "thick-paint" ||
+      mode === "wet-paint"
+    ) {
+      this.runGeometryVisualConformance(mode);
+      return;
+    }
+    if (mode === "brush") {
+      this.runGeometryVisualConformance("brush");
+      return;
+    }
+    if (mode !== "bump") {
+      return;
+    }
+    const brushGuid =
+      new URLSearchParams(window.location.search).get("brush-guid") ??
+      "f72ec0e7-a844-4e38-82e3-140c44772699";
+    const entry = findBrushByGuid(openBrushInventory, brushGuid);
+    const material = openBrushShaderLibrary.get(brushGuid);
+    if (!entry || !material) {
+      console.error(`${BRUSH_VISUAL_CONFORMANCE_PREFIX} ${brushGuid} did not load.`);
+      document.documentElement.dataset.brushVisualConformance = "fail";
+      return;
+    }
+    openBrushShaderLibrary.updateFrame(1, this.camera);
+    const result = runBumpVisualConformance(this.renderer, material);
+    openBrushShaderCompatibility.record({
+      guid: brushGuid,
+      name: entry.name,
+      context: "visual",
+      status: result.passed ? "visual-passed" : "visual-failed",
+      message: `bump changed=${(result.changedPixelRatio * 100).toFixed(2)}% rms=${result.rootMeanSquareDifference.toFixed(2)}`,
+    });
+    showBumpVisualConformance(result, entry.name);
+    document.documentElement.dataset.brushVisualConformance = result.passed
+      ? "pass"
+      : "fail";
+    console.log(
+      `${BRUSH_VISUAL_CONFORMANCE_PREFIX} ${result.passed ? "PASS" : "FAIL"} changed=${(result.changedPixelRatio * 100).toFixed(2)}% rms=${result.rootMeanSquareDifference.toFixed(2)} mean=${result.meanAbsoluteDifference.toFixed(2)}`,
+    );
+  }
+
+  private runGeometryVisualConformance(
+    mode:
+      | "particle"
+      | "spray"
+      | "midpoint"
+      | "waveform"
+      | "double-tapered"
+      | "electricity"
+      | "disco"
+      | "light-wire"
+      | "hyper-grid"
+      | "square-paper"
+      | "thick-geometry"
+      | "hull"
+      | "diamond-hull"
+      | "smooth-hull"
+      | "concave-hull"
+      | "print3d"
+      | "oil-paint"
+      | "ink"
+      | "thick-paint"
+      | "wet-paint"
+      | "brush",
+  ): void {
+    const requestedBrushGuid = new URLSearchParams(window.location.search).get(
+      "brush-guid",
+    );
+    const brushGuid =
+      mode === "brush" && requestedBrushGuid
+        ? requestedBrushGuid
+        : mode === "spray"
+        ? "8dc4a70c-d558-4efd-a5ed-d4e860f40dc3"
+        : mode === "midpoint"
+          ? "6a1cf9f9-032c-45ec-311e-a6680bee32e9"
+          : mode === "waveform"
+            ? "10201aa3-ebc2-42d8-84b7-2e63f6eeb8ab"
+            : mode === "double-tapered"
+              ? "0d3889f3-3ede-470c-8af4-de4813306126"
+              : mode === "electricity"
+                ? "f6e85de3-6dcc-4e7f-87fd-cee8c3d25d51"
+                : mode === "disco"
+                  ? "4391aaaa-df73-4396-9e33-31e4e4930b27"
+                  : mode === "light-wire"
+                    ? "4391aaaa-df81-4396-9e33-31e4e4930b27"
+                    : mode === "hyper-grid"
+                      ? "6a1cf9f9-032c-45ec-9b6e-a6680bee32e9"
+                      : mode === "square-paper"
+                        ? "2e03b1bf-3ebd-4609-9d7e-f4cafadc4dfa"
+                        : mode === "thick-geometry"
+                          ? "39ee7377-7a9e-47a7-a0f8-0c77712f75d3"
+                          : mode === "hull"
+                            ? "faaa4d44-fcfb-4177-96be-753ac0421ba3"
+                            : mode === "diamond-hull"
+                              ? "c8313697-2563-47fc-832e-290f4c04b901"
+                              : mode === "smooth-hull"
+                                ? "355b3579-bf1d-4ff5-a200-704437fe684b"
+                                : mode === "concave-hull"
+                                  ? "7ae1f880-a517-44a0-99f9-1cab654498c6"
+                                  : mode === "print3d"
+                                    ? "d3f3b18a-da03-f694-b838-28ba8e749a98"
+                                    : mode === "oil-paint"
+                                      ? "f72ec0e7-a844-4e38-82e3-140c44772699"
+                                      : mode === "ink"
+                                        ? "f5c336cf-5108-4b40-ade9-c687504385ab"
+                                        : mode === "thick-paint"
+                                          ? "75b32cf0-fdd6-4d89-a64b-e2a00b247b0f"
+                                          : mode === "wet-paint"
+                                            ? "b67c0e81-ce6d-40a8-aeb0-ef036b081aa3"
+        : "70d79cca-b159-4f35-990c-f02193947fe8";
+    const material = openBrushShaderLibrary.get(brushGuid);
+    const entry = findBrushByGuid(openBrushInventory, brushGuid);
+    if (!material || !entry) {
+      console.error(
+        `${BRUSH_VISUAL_CONFORMANCE_PREFIX} ${mode} material did not load.`,
+      );
+      document.documentElement.dataset.brushVisualConformance = "fail";
+      return;
+    }
+    const mainTextureImporter = entry.shaderAssets?.textureImporters.MainTex;
+    const mainTexture = material.uniforms.u_MainTex?.value as Texture | undefined;
+    if (mainTextureImporter) {
+      document.documentElement.dataset.brushTextureSettings =
+        mainTexture &&
+        matchesBrushTextureImporterSettings(mainTexture, mainTextureImporter)
+          ? "pass"
+          : "fail";
+    }
+    const stroke = createEmptyStrokeData({
+      guid: "brush-visual-conformance-smoke",
+      brushGuid,
+      brushSize:
+        mode === "brush"
+          ? Math.min(
+              entry.brushSizeRange[1],
+              Math.max(
+                entry.brushSizeRange[0],
+                OPEN_BRUSH_DEFAULT_STARTUP_SCREENSHOT_BRUSH_SIZE,
+              ),
+            )
+          : mode === "waveform"
+            ? 0.4
+            : 0.2,
+      color:
+        mode === "spray"
+          ? [1, 0.1, 0.6, 1]
+          : mode === "midpoint"
+            ? [0.4, 1, 0.1, 1]
+            : mode === "waveform"
+              ? [0.1, 0.5, 1, 1]
+              : mode === "double-tapered"
+                ? [1, 0.4, 0.1, 1]
+              : mode === "brush"
+                ? [0.2, 0.2, 0.9019608, 1]
+                : [0.1, 0.8, 1, 1],
+      seed: 23,
+      controlPoints: [
+        {
+          position: [-0.1, 0, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 0,
+        },
+        {
+          position: mode === "particle" ? [0.1, 0, 0] : [0.5, 0, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 100,
+        },
+      ],
+    });
+    if (mode === "brush") {
+      stroke.controlPoints = createOpenBrushScreenshotControlPoints();
+      stroke.seed = 0;
+      if (entry.name === "SingleSided") {
+        for (const point of stroke.controlPoints) {
+          point.orientation = [1, 0, 0, 0];
+        }
+      }
+    }
+    if (
+      mode === "double-tapered" ||
+      mode === "electricity"
+    ) {
+      stroke.controlPoints.splice(1, 0, {
+        position: [0.2, 0, 0],
+        orientation: [0, 0, 0, 1],
+        pressure: 1,
+        timestampMs: 50,
+      });
+    }
+    if (mode === "concave-hull") {
+      stroke.controlPoints.splice(
+        0,
+        stroke.controlPoints.length,
+        {
+          position: [-0.1, 0, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 0,
+        },
+        {
+          position: [0.1, 0.1, 0],
+          orientation: [0, Math.SQRT1_2, 0, Math.SQRT1_2],
+          pressure: 1,
+          timestampMs: 35,
+        },
+        {
+          position: [0.3, -0.1, 0.15],
+          orientation: [0, 0, Math.SQRT1_2, Math.SQRT1_2],
+          pressure: 1,
+          timestampMs: 70,
+        },
+        {
+          position: [0.5, 0.05, 0],
+          orientation: [Math.SQRT1_2, 0, 0, Math.SQRT1_2],
+          pressure: 1,
+          timestampMs: 105,
+        },
+      );
+    }
+    if (mode === "print3d") {
+      stroke.controlPoints.splice(
+        0,
+        stroke.controlPoints.length,
+        {
+          position: [0, -0.25, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 0,
+        },
+        {
+          position: [0, 0, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 50,
+        },
+        {
+          position: [0.05, 0.25, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 100,
+        },
+      );
+    }
+    const geometry = generateBrushGeometry(stroke, entry.geometryFamily, {
+      pressureSizeRange: entry.pressureSizeRange,
+      pressureOpacityRange: entry.pressureOpacityRange,
+      geometryParams: entry.geometryParams,
+      generatorClass: entry.generatorClass,
+    });
+    const conformanceCamera =
+      mode === "brush" ? createOpenBrushScreenshotCamera() : this.camera;
+    openBrushShaderLibrary.updateFrame(
+      mode === "brush" ? OPEN_BRUSH_SCREENSHOT_SHADER_TIME_SECONDS : 1,
+      conformanceCamera,
+    );
+    const result = runBrushGeometryVisualConformance(
+      this.renderer,
+      material,
+      geometry,
+      entry.name,
+      mode === "brush"
+        ? entry.geometryFamily === "particle"
+          ? "particle"
+          : "stroke"
+        : mode === "waveform" ||
+        mode === "double-tapered" ||
+        mode === "electricity" ||
+        mode === "disco" ||
+        mode === "light-wire" ||
+        mode === "square-paper" ||
+        mode === "thick-geometry" ||
+        mode === "hull" ||
+        mode === "diamond-hull" ||
+        mode === "smooth-hull" ||
+        mode === "concave-hull" ||
+        mode === "print3d" ||
+        mode === "oil-paint" ||
+        mode === "ink" ||
+        mode === "thick-paint" ||
+        mode === "wet-paint"
+        ? "stroke"
+        : "particle",
+      mode === "brush" ? conformanceCamera : undefined,
+      mode === "brush" ? 0.001 : 0.005,
+      mode === "brush" ? OPEN_BRUSH_SCREENSHOT_SIZE : undefined,
+    );
+    openBrushShaderCompatibility.record({
+      guid: brushGuid,
+      name: entry.name,
+      context: "visual",
+      status: result.passed ? "visual-passed" : "visual-failed",
+      message: `${mode} coverage=${(result.coveredPixelRatio * 100).toFixed(2)}%`,
+    });
+    showBrushGeometryVisualConformance(result);
+    document.documentElement.dataset.brushVisualConformance = result.passed
+      ? "pass"
+      : "fail";
+    console.log(
+      `${BRUSH_VISUAL_CONFORMANCE_PREFIX} ${result.passed ? "PASS" : "FAIL"} particleCoverage=${(result.coveredPixelRatio * 100).toFixed(2)}%`,
+    );
+  }
+
   update(_delta: number, time: number) {
-    openBrushShaderLibrary.updateFrame(time, this.camera);
+    const levelTime = this.toLevelTimeSeconds(time);
+    this.currentLevelTimeSeconds = levelTime;
+    openBrushShaderLibrary.updateFrame(levelTime, this.camera);
 
     const commandEntity = this.getFirstEntity("commands");
     if (!commandEntity) {
@@ -404,13 +847,13 @@ export class StrokeAuthoringSystem extends createSystem({
       this.clearPanelFocusStatus(appStateEntity, activeTool);
       const pressure = Number(commandEntity.getValue(InputCommandState, "pressure"));
       if (!this.activeStroke) {
-        this.startStroke(commandEntity, time, pressure);
+        this.startStroke(commandEntity, levelTime, pressure);
       } else if (this.activeStroke.samplingMode === "straightedge") {
-        this.sampleStraightedgeStroke(time, pressure);
+        this.sampleStraightedgeStroke(levelTime, pressure);
       } else if (this.activeStroke.samplingMode === "tape") {
-        this.sampleTapeStroke(time, pressure);
+        this.sampleTapeStroke(levelTime, pressure);
       } else {
-        this.sampleActiveStroke(time, pressure, false);
+        this.sampleActiveStroke(levelTime, pressure, false);
       }
     } else if (paintBlockReason === "panel") {
       this.setPanelFocusStatus(appStateEntity, activeTool);
@@ -421,6 +864,16 @@ export class StrokeAuthoringSystem extends createSystem({
     }
 
     this.updateHistoryState();
+  }
+
+  private toLevelTimeSeconds(time: number): number {
+    if (!Number.isFinite(time)) {
+      return 0;
+    }
+    if (this.levelTimeOriginSeconds === undefined) {
+      this.levelTimeOriginSeconds = time;
+    }
+    return Math.max(0, time - this.levelTimeOriginSeconds);
   }
 
   private isHoveringPanel(): boolean {
@@ -611,8 +1064,15 @@ export class StrokeAuthoringSystem extends createSystem({
       mesh,
       geometry,
       geometryFamily,
+      geometryParams: brushEntry?.geometryParams,
+      generatorClass: brushEntry?.generatorClass,
       pressureSizeRange: brushEntry?.pressureSizeRange,
       pressureOpacityRange: brushEntry?.pressureOpacityRange,
+      deterministicParticleBirthTime: false,
+      particleKnotIndexOffset: 0,
+      particleDistanceOffset: 0,
+      particleBirthTimeOffsetSeconds: 0,
+      geometryFinalized: false,
       toolId: activeTool.id,
       groupId,
       samplingMode: activeTool.samplingMode,
@@ -624,8 +1084,13 @@ export class StrokeAuthoringSystem extends createSystem({
       controlPoints: strokeData.controlPoints,
       lastPosition: [0, 0, 0],
       lastPointIsKeeper: false,
+      lastKeeperSmoothedPressure: 0,
       solidMinLengthMeters:
-        resolveSolidMinLengthMeters(brushEntry, geometryFamily) / poseScale,
+        resolveGeneratorSolidMinLengthMeters({
+          generatorClass: brushEntry?.generatorClass,
+          descriptorValue: brushEntry?.geometryParams?.solidMinLengthMeters,
+          geometryFamily,
+        }) / poseScale,
       geometryArrays: createBrushGeometryArrays(),
       posePosition: poseObject
         ? [poseObject.position.x, poseObject.position.y, poseObject.position.z]
@@ -665,11 +1130,39 @@ export class StrokeAuthoringSystem extends createSystem({
     // Open Brush sampling: a new solid segment ("keeper") spawns every
     // spawn-interval of travel; between keepers the trailing control point is
     // overwritten each frame so the stroke tip tracks the pointer exactly.
+    const dx = frame.position[0] - stroke.lastPosition[0];
+    const dy = frame.position[1] - stroke.lastPosition[1];
+    const dz = frame.position[2] - stroke.lastPosition[2];
+    const pressureWindowMeters =
+      (stroke.geometryParams?.m11Compatibility === true
+        ? OPEN_BRUSH_M11_PRESSURE_SMOOTH_WINDOW_METERS
+        : OPEN_BRUSH_PRESSURE_SMOOTH_WINDOW_METERS) / stroke.poseScale;
+    const smoothedPressure =
+      stroke.controlPoints.length === 0
+        ? stroke.geometryParams?.m11Compatibility === true &&
+          shouldZeroInitialM11SamplingPressure(stroke.generatorClass)
+          ? 0
+          : frame.pressure
+        : resolveDistanceSmoothedPressure({
+            previousPressure: stroke.lastKeeperSmoothedPressure,
+            pressure: frame.pressure,
+            distanceMeters: Math.hypot(dx, dy, dz),
+            windowMeters: pressureWindowMeters,
+          });
+    const samplingPressure = shouldSmoothStrokeSamplingPressure(
+      stroke.generatorClass,
+    )
+      ? smoothedPressure
+      : frame.pressure;
     const spawnInterval = resolveStrokeSpawnIntervalMeters({
       brushSize: stroke.strokeData.brushSize,
-      pressure: frame.pressure,
+      pressure: samplingPressure,
       pressureSizeMin: stroke.pressureSizeRange?.[0],
       solidMinLengthMeters: stroke.solidMinLengthMeters,
+      generatorClass: stroke.generatorClass,
+      sprayRateMultiplier: stroke.geometryParams?.sprayRateMultiplier,
+      particleRate: stroke.geometryParams?.particleRate,
+      localUnitsPerMeter: 1 / stroke.poseScale,
     });
     const decision = force
       ? "keep"
@@ -713,6 +1206,7 @@ export class StrokeAuthoringSystem extends createSystem({
       stroke.lastPosition[1] = frame.position[1];
       stroke.lastPosition[2] = frame.position[2];
       stroke.lastPointIsKeeper = true;
+      stroke.lastKeeperSmoothedPressure = samplingPressure;
     } else {
       stroke.lastPointIsKeeper = false;
     }
@@ -786,11 +1280,15 @@ export class StrokeAuthoringSystem extends createSystem({
     brushEntry: BrushInventoryEntry | undefined,
     materialSpec: BrushMaterialSpec,
     opacity: number,
-  ): Material {
+  ): Material | Material[] {
     if (brushEntry) {
       const shaderMaterial = openBrushShaderLibrary.get(brushEntry.guid);
       if (shaderMaterial) {
-        return shaderMaterial;
+        return createBrushRenderMaterial(
+          brushEntry.guid,
+          shaderMaterial,
+          openBrushShaderLibrary.frameUniforms,
+        );
       }
     }
     return new MeshBasicMaterial({
@@ -813,38 +1311,118 @@ export class StrokeAuthoringSystem extends createSystem({
       {
         pressureSizeRange: stroke.pressureSizeRange,
         pressureOpacityRange: stroke.pressureOpacityRange,
+        geometryParams: stroke.geometryParams,
+        generatorClass: stroke.generatorClass,
+        deterministicBirthTime: stroke.deterministicParticleBirthTime,
+        particleKnotIndexOffset: stroke.particleKnotIndexOffset,
+        particleDistanceOffset: stroke.particleDistanceOffset,
+        particleBirthTimeOffsetSeconds: stroke.particleBirthTimeOffsetSeconds,
+        particlePreview: stroke === this.previewTrail,
+        finalized: stroke.geometryFinalized,
+        lastControlPointIsKeeper:
+          stroke.samplingMode === "freehand" ? stroke.lastPointIsKeeper : true,
       },
       arrays,
     );
 
     // Rebuilds run every sampled frame while drawing: reuse the GPU-bound
-    // attributes and only rebind when the backing storage grew.
-    if (reallocated || !stroke.geometry.getAttribute("position")) {
+    // attributes and rebind only when storage grows or the UV layout changes.
+    const currentShaderUv = stroke.geometry.getAttribute("a_texcoord0");
+    if (
+      reallocated ||
+      !stroke.geometry.getAttribute("position") ||
+      currentShaderUv?.itemSize !== arrays.uv0Size
+    ) {
       const position = new BufferAttribute(arrays.positions, 3);
       const normal = new BufferAttribute(arrays.normals, 3);
+      const tangent = new BufferAttribute(arrays.tangents, 4);
       const color = new BufferAttribute(arrays.colors, 4);
       const uv = new BufferAttribute(arrays.uvs, 2);
+      const shaderUv =
+        arrays.uv0Size === 3
+          ? new BufferAttribute(arrays.packedUvs, 3)
+          : arrays.uv0Size === 4
+            ? new BufferAttribute(arrays.particleUvs, 4)
+            : uv;
+      const shaderUv1 =
+        arrays.uv1Size === 3
+          ? new BufferAttribute(arrays.vectorUvs, 3)
+          : new BufferAttribute(arrays.uv1s, 4);
       const index = new BufferAttribute(arrays.indices, 1);
-      for (const attribute of [position, normal, color, uv, index]) {
+      for (const attribute of [
+        position,
+        normal,
+        tangent,
+        color,
+        uv,
+        shaderUv,
+        shaderUv1,
+        index,
+      ]) {
         attribute.setUsage(DynamicDrawUsage);
       }
       stroke.geometry.setAttribute("position", position);
       stroke.geometry.setAttribute("normal", normal);
+      stroke.geometry.setAttribute("tangent", tangent);
       stroke.geometry.setAttribute("color", color);
       stroke.geometry.setAttribute("uv", uv);
       applyBrushShaderAttributeAliases(stroke.geometry);
+      stroke.geometry.setAttribute("a_texcoord0", shaderUv);
+      if (arrays.uv1Size > 0) {
+        stroke.geometry.setAttribute("uv1", shaderUv1);
+        stroke.geometry.setAttribute("a_texcoord1", shaderUv1);
+      } else {
+        stroke.geometry.deleteAttribute("uv1");
+        stroke.geometry.deleteAttribute("a_texcoord1");
+      }
       stroke.geometry.setIndex(index);
     } else {
-      (stroke.geometry.getAttribute("position") as BufferAttribute).needsUpdate = true;
-      (stroke.geometry.getAttribute("normal") as BufferAttribute).needsUpdate = true;
-      (stroke.geometry.getAttribute("color") as BufferAttribute).needsUpdate = true;
-      (stroke.geometry.getAttribute("uv") as BufferAttribute).needsUpdate = true;
+      this.markAttributeRangeUpdated(
+        stroke.geometry.getAttribute("position") as BufferAttribute,
+        arrays.vertexCount,
+      );
+      this.markAttributeRangeUpdated(
+        stroke.geometry.getAttribute("normal") as BufferAttribute,
+        arrays.vertexCount,
+      );
+      this.markAttributeRangeUpdated(
+        stroke.geometry.getAttribute("tangent") as BufferAttribute,
+        arrays.vertexCount,
+      );
+      this.markAttributeRangeUpdated(
+        stroke.geometry.getAttribute("color") as BufferAttribute,
+        arrays.vertexCount,
+      );
+      this.markAttributeRangeUpdated(
+        stroke.geometry.getAttribute("uv") as BufferAttribute,
+        arrays.vertexCount,
+      );
+      const shaderUv = stroke.geometry.getAttribute("a_texcoord0");
+      if (shaderUv && shaderUv !== stroke.geometry.getAttribute("uv")) {
+        this.markAttributeRangeUpdated(
+          shaderUv as BufferAttribute,
+          arrays.vertexCount,
+        );
+      }
+      const shaderUv1 = stroke.geometry.getAttribute("a_texcoord1");
+      if (shaderUv1) {
+        this.markAttributeRangeUpdated(
+          shaderUv1 as BufferAttribute,
+          arrays.vertexCount,
+        );
+      }
       const index = stroke.geometry.getIndex();
       if (index) {
-        index.needsUpdate = true;
+        this.markAttributeRangeUpdated(index, arrays.indexCount);
       }
     }
+    applyBrushShaderSupplementalAttributes(
+      stroke.geometry,
+      stroke.strokeData.brushGuid,
+      arrays.vertexCount,
+    )?.setUsage(DynamicDrawUsage);
     stroke.geometry.setDrawRange(0, arrays.indexCount);
+    applyBrushRenderGroups(stroke.geometry, arrays.indexCount, stroke.mesh.material);
     this.copyGeneratedBounds(stroke, arrays.bounds.min, arrays.bounds.max);
     // The preview trail reuses this path with a component-less entity.
     if (stroke.entity.hasComponent(BrushStroke)) {
@@ -854,6 +1432,15 @@ export class StrokeAuthoringSystem extends createSystem({
         stroke.entity.setValue(BrushStroke, "renderWarning", arrays.warning);
       }
     }
+  }
+
+  private markAttributeRangeUpdated(
+    attribute: BufferAttribute,
+    usedElementCount: number,
+  ): void {
+    attribute.clearUpdateRanges();
+    attribute.addUpdateRange(0, usedElementCount * attribute.itemSize);
+    attribute.needsUpdate = true;
   }
 
   private copyGeneratedBounds(
@@ -959,7 +1546,7 @@ export class StrokeAuthoringSystem extends createSystem({
     }
   }
 
-  private static readonly PREVIEW_POINT_LIFE_SECONDS = 0.1;
+  private static readonly PREVIEW_POINT_LIFE_SECONDS = 0.2;
   private static readonly PREVIEW_IDEAL_LENGTH_METERS = 1;
 
   /**
@@ -1018,27 +1605,71 @@ export class StrokeAuthoringSystem extends createSystem({
     poseObject.getWorldQuaternion(this.previewPoseQuaternion).invert();
     this.previewWorldQuaternion.premultiply(this.previewPoseQuaternion);
 
-    // The trail appends one point per frame for as long as a paint tool is
-    // idle; recycle expired points through a small pool instead of
-    // allocating fresh ones.
     const points = trail.strokeData.controlPoints;
-    const point = this.previewPointPool.pop() ?? {
-      position: [0, 0, 0],
-      orientation: [0, 0, 0, 1],
+    const poseScale = poseObject.scale.x || 1;
+    if (poseScale !== trail.poseScale) {
+      trail.solidMinLengthMeters *= trail.poseScale / poseScale;
+      trail.poseScale = poseScale;
+    }
+    trail.strokeData.brushSize =
+      Number(settingsEntity.getValue(BrushSettings, "size")) / poseScale;
+    const spawnInterval = resolveStrokeSpawnIntervalMeters({
+      brushSize: trail.strokeData.brushSize,
       pressure: 1,
-      timestampMs: 0,
-    };
-    point.position[0] = this.previewLocalPosition.x;
-    point.position[1] = this.previewLocalPosition.y;
-    point.position[2] = this.previewLocalPosition.z;
-    point.orientation[0] = this.previewWorldQuaternion.x;
-    point.orientation[1] = this.previewWorldQuaternion.y;
-    point.orientation[2] = this.previewWorldQuaternion.z;
-    point.orientation[3] = this.previewWorldQuaternion.w;
-    point.pressure = 1;
-    point.timestampMs = this.previewClock * 1000;
-    points.push(point);
-    this.previewBirths.push(this.previewClock);
+      pressureSizeMin: trail.pressureSizeRange?.[0],
+      solidMinLengthMeters: trail.solidMinLengthMeters,
+      generatorClass: trail.generatorClass,
+      sprayRateMultiplier: trail.geometryParams?.sprayRateMultiplier,
+      particleRate: trail.geometryParams?.particleRate,
+      localUnitsPerMeter: 1 / poseScale,
+    });
+    const currentPosition = this.previewSamplePosition;
+    currentPosition[0] = this.previewLocalPosition.x;
+    currentPosition[1] = this.previewLocalPosition.y;
+    currentPosition[2] = this.previewLocalPosition.z;
+    const decision =
+      points.length === 0
+        ? "keep"
+        : resolveStrokeSampleDecision(
+            trail.lastPosition,
+            currentPosition,
+            spawnInterval,
+            OPEN_BRUSH_MINIMUM_MOVE_METERS / poseScale,
+          );
+    if (decision !== "ignore") {
+      let point: ControlPoint;
+      let pointIndex: number;
+      if (trail.lastPointIsKeeper || points.length === 0) {
+        point = this.previewPointPool.pop() ?? {
+          position: [0, 0, 0],
+          orientation: [0, 0, 0, 1],
+          pressure: 1,
+          timestampMs: 0,
+        };
+        points.push(point);
+        this.previewBirths.push(this.previewClock);
+        pointIndex = points.length - 1;
+      } else {
+        pointIndex = points.length - 1;
+        point = points[pointIndex];
+        this.previewBirths[pointIndex] = this.previewClock;
+      }
+      point.position[0] = currentPosition[0];
+      point.position[1] = currentPosition[1];
+      point.position[2] = currentPosition[2];
+      point.orientation[0] = this.previewWorldQuaternion.x;
+      point.orientation[1] = this.previewWorldQuaternion.y;
+      point.orientation[2] = this.previewWorldQuaternion.z;
+      point.orientation[3] = this.previewWorldQuaternion.w;
+      point.pressure = 1;
+      point.timestampMs = this.previewClock * 1000;
+      trail.lastPointIsKeeper = decision === "keep";
+      if (trail.lastPointIsKeeper) {
+        trail.lastPosition[0] = currentPosition[0];
+        trail.lastPosition[1] = currentPosition[1];
+        trail.lastPosition[2] = currentPosition[2];
+      }
+    }
     while (
       this.previewBirths.length > 2 &&
       this.previewClock - this.previewBirths[0] >
@@ -1048,6 +1679,15 @@ export class StrokeAuthoringSystem extends createSystem({
       const expired = points.shift();
       if (expired) {
         this.previewPointPool.push(expired);
+        trail.particleKnotIndexOffset += 1;
+        const next = points[0];
+        if (next) {
+          trail.particleDistanceOffset += Math.hypot(
+            next.position[0] - expired.position[0],
+            next.position[1] - expired.position[1],
+            next.position[2] - expired.position[2],
+          );
+        }
       }
     }
     if (points.length < 2) {
@@ -1058,7 +1698,6 @@ export class StrokeAuthoringSystem extends createSystem({
 
     // Width: taper toward the tail, and thin the whole trail when it is
     // short relative to the ideal length (in room space).
-    const poseScale = poseObject.scale.x || 1;
     let canvasLength = 0;
     for (let i = 1; i < points.length; i += 1) {
       const a = points[i - 1].position;
@@ -1079,8 +1718,6 @@ export class StrokeAuthoringSystem extends createSystem({
       BrushSettings,
       "color",
     ) as Float32Array;
-    trail.strokeData.brushSize =
-      Number(settingsEntity.getValue(BrushSettings, "size")) / poseScale;
     trail.strokeData.color[0] = colorView[0];
     trail.strokeData.color[1] = colorView[1];
     trail.strokeData.color[2] = colorView[2];
@@ -1140,8 +1777,15 @@ export class StrokeAuthoringSystem extends createSystem({
       mesh,
       geometry,
       geometryFamily: brushEntry?.geometryFamily ?? "unsupported",
+      geometryParams: brushEntry?.geometryParams,
+      generatorClass: brushEntry?.generatorClass,
       pressureSizeRange: brushEntry?.pressureSizeRange,
       pressureOpacityRange: brushEntry?.pressureOpacityRange,
+      deterministicParticleBirthTime: false,
+      particleKnotIndexOffset: 0,
+      particleDistanceOffset: 0,
+      particleBirthTimeOffsetSeconds: 0,
+      geometryFinalized: false,
       toolId: "free-paint",
       groupId: 0,
       samplingMode: "freehand",
@@ -1153,7 +1797,12 @@ export class StrokeAuthoringSystem extends createSystem({
       controlPoints: strokeData.controlPoints,
       lastPosition: [0, 0, 0],
       lastPointIsKeeper: false,
-      solidMinLengthMeters: 0,
+      lastKeeperSmoothedPressure: 0,
+      solidMinLengthMeters: resolveGeneratorSolidMinLengthMeters({
+        generatorClass: brushEntry?.generatorClass,
+        descriptorValue: brushEntry?.geometryParams?.solidMinLengthMeters,
+        geometryFamily: brushEntry?.geometryFamily ?? "unsupported",
+      }),
       geometryArrays: createBrushGeometryArrays(),
       posePosition: [0, 0, 0],
       poseOrientationInv: [0, 0, 0, 1],
@@ -1171,6 +1820,13 @@ export class StrokeAuthoringSystem extends createSystem({
       this.previewPointPool.push(...points);
       points.length = 0;
       this.previewTrail.mesh.visible = false;
+      this.previewTrail.particleKnotIndexOffset = 0;
+      this.previewTrail.particleDistanceOffset = 0;
+      this.previewTrail.lastPointIsKeeper = false;
+      this.previewTrail.lastKeeperSmoothedPressure = 0;
+      this.previewTrail.lastPosition[0] = 0;
+      this.previewTrail.lastPosition[1] = 0;
+      this.previewTrail.lastPosition[2] = 0;
     }
     this.previewBirths.length = 0;
   }
@@ -1190,10 +1846,13 @@ export class StrokeAuthoringSystem extends createSystem({
     if (!stroke) {
       return;
     }
+    stroke.geometryFinalized = true;
+    this.rebuildStrokeMesh(stroke);
     if (
-      (stroke.samplingMode === "straightedge" ||
+      ((stroke.samplingMode === "straightedge" ||
         stroke.samplingMode === "tape") &&
-      stroke.controlPoints.length < 2
+        stroke.controlPoints.length < 2) ||
+      shouldDiscardGeneratedStroke(stroke.geometryArrays.indexCount)
     ) {
       // Materials are shared per brush GUID and must survive; dispose only
       // this stroke's geometry (entity.dispose() would kill the material for
@@ -1752,7 +2411,16 @@ export class StrokeAuthoringSystem extends createSystem({
           return;
         }
       }
-      const runtime = this.buildStrokeRuntimeFromData(strokeData, true, false);
+      const newestRemotePoint =
+        strokeData.controlPoints[strokeData.controlPoints.length - 1];
+      const newestRemoteTimestampSeconds =
+        (newestRemotePoint?.timestampMs ?? 0) * 0.001;
+      const runtime = this.buildStrokeRuntimeFromData(
+        strokeData,
+        true,
+        false,
+        this.currentLevelTimeSeconds - newestRemoteTimestampSeconds,
+      );
       this.remoteActiveStrokes.set(strokeData.guid, runtime);
       return;
     }
@@ -1775,6 +2443,9 @@ export class StrokeAuthoringSystem extends createSystem({
     this.upsertRemoteStroke(strokeData);
     const runtime = this.remoteActiveStrokes.get(strokeData.guid);
     if (runtime) {
+      runtime.geometryFinalized = true;
+      runtime.lastPointIsKeeper = false;
+      this.rebuildStrokeMesh(runtime);
       runtime.entity.setValue(BrushStroke, "finalized", true);
       this.remoteActiveStrokes.delete(strokeData.guid);
     }
@@ -1818,6 +2489,7 @@ export class StrokeAuthoringSystem extends createSystem({
     strokeData: StrokeData,
     startVisible: boolean,
     finalized = true,
+    particleBirthTimeOffsetSeconds = 0,
   ): RuntimeStroke {
     this.strokeCounter += 1;
     const brushEntry = findBrushByGuid(openBrushInventory, strokeData.brushGuid);
@@ -1869,8 +2541,15 @@ export class StrokeAuthoringSystem extends createSystem({
       mesh,
       geometry,
       geometryFamily,
+      geometryParams: brushEntry?.geometryParams,
+      generatorClass: brushEntry?.generatorClass,
       pressureSizeRange: brushEntry?.pressureSizeRange,
       pressureOpacityRange: brushEntry?.pressureOpacityRange,
+      deterministicParticleBirthTime: finalized,
+      particleKnotIndexOffset: 0,
+      particleDistanceOffset: 0,
+      particleBirthTimeOffsetSeconds,
+      geometryFinalized: finalized,
       toolId: "free-paint",
       groupId: strokeData.groupId,
       samplingMode: "freehand",
@@ -1881,8 +2560,13 @@ export class StrokeAuthoringSystem extends createSystem({
       strokeData,
       controlPoints: strokeData.controlPoints,
       lastPosition: [0, 0, 0],
-      lastPointIsKeeper: false,
-      solidMinLengthMeters: resolveSolidMinLengthMeters(brushEntry, geometryFamily),
+      lastPointIsKeeper: finalized,
+      lastKeeperSmoothedPressure: 0,
+      solidMinLengthMeters: resolveGeneratorSolidMinLengthMeters({
+        generatorClass: brushEntry?.generatorClass,
+        descriptorValue: brushEntry?.geometryParams?.solidMinLengthMeters,
+        geometryFamily,
+      }),
       geometryArrays: createBrushGeometryArrays(),
       posePosition: [0, 0, 0],
       poseOrientationInv: [0, 0, 0, 1],
@@ -1948,8 +2632,15 @@ export class StrokeAuthoringSystem extends createSystem({
       mesh,
       geometry,
       geometryFamily: source.geometryFamily,
+      geometryParams: brushEntry?.geometryParams,
+      generatorClass: brushEntry?.generatorClass,
       pressureSizeRange: brushEntry?.pressureSizeRange,
       pressureOpacityRange: brushEntry?.pressureOpacityRange,
+      deterministicParticleBirthTime: source.deterministicParticleBirthTime,
+      particleKnotIndexOffset: source.particleKnotIndexOffset,
+      particleDistanceOffset: source.particleDistanceOffset,
+      particleBirthTimeOffsetSeconds: source.particleBirthTimeOffsetSeconds,
+      geometryFinalized: true,
       toolId: source.toolId,
       groupId: source.groupId,
       samplingMode: source.samplingMode,
@@ -1960,11 +2651,13 @@ export class StrokeAuthoringSystem extends createSystem({
       strokeData,
       controlPoints: strokeData.controlPoints,
       lastPosition: [0, 0, 0],
-      lastPointIsKeeper: false,
-      solidMinLengthMeters: resolveSolidMinLengthMeters(
-        brushEntry,
-        source.geometryFamily,
-      ),
+      lastPointIsKeeper: source.lastPointIsKeeper,
+      lastKeeperSmoothedPressure: 0,
+      solidMinLengthMeters: resolveGeneratorSolidMinLengthMeters({
+        generatorClass: brushEntry?.generatorClass,
+        descriptorValue: brushEntry?.geometryParams?.solidMinLengthMeters,
+        geometryFamily: source.geometryFamily,
+      }),
       geometryArrays: createBrushGeometryArrays(),
       posePosition: [
         source.posePosition[0],

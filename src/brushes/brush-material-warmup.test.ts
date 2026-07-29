@@ -13,25 +13,24 @@ describe("createBrushMaterialWarmupPlan", () => {
     expect(plan.supportedBrushCount).toBe(2);
     expect(plan.fallbackBrushCount).toBe(0);
     expect(plan.unsupportedBrushCount).toBe(0);
-    expect(plan.variants).toHaveLength(2);
+    expect(plan.variants).toHaveLength(1);
     expect(plan.variants[0].brushGuids).toEqual(["brush-a", "brush-b"]);
-    expect(plan.variants[1].brushGuids).toEqual(["brush-a", "brush-b"]);
     expect(plan.warnings).toEqual([]);
   });
 
-  it("includes transparent and additive variants in warmup coverage", () => {
+  it("keeps additive as the only transparent known-brush variant", () => {
     const plan = createBrushMaterialWarmupPlan([
       createBrush({ guid: "additive", materialFamily: "additive", blendMode: 2 }),
       createBrush({ guid: "standard", materialFamily: "standard" }),
     ]);
 
-    expect(plan.transparentVariantCount).toBeGreaterThanOrEqual(2);
+    expect(plan.transparentVariantCount).toBe(1);
     expect(plan.variants.some((variant) => variant.blending === "additive")).toBe(
       true,
     );
     expect(
       plan.variants.some((variant) => variant.blending === "transparent"),
-    ).toBe(true);
+    ).toBe(false);
   });
 
   it("keeps fallback and unsupported brushes on explicit warning paths", () => {
@@ -97,7 +96,11 @@ function createBrush(
     vectorParams: overrides.vectorParams,
     colorParams: overrides.colorParams,
     supportStatus: overrides.supportStatus ?? "supported",
+    fidelityConfidence:
+      overrides.fidelityConfidence ?? "likely-mostly-correct",
     pickerVisible: overrides.pickerVisible ?? true,
+    pickerEnabled: overrides.pickerEnabled ?? true,
+    portRequired: overrides.portRequired ?? true,
     tags: overrides.tags ?? ["default"],
     geometryFamily: overrides.geometryFamily ?? "ribbon",
     materialFamily: overrides.materialFamily ?? "standard",

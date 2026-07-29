@@ -1,8 +1,13 @@
-import type { BrushInventoryEntry } from "./brush-inventory.js";
+import type {
+  BrushInventoryEntry,
+  BrushTextureImporterSettings,
+} from "./brush-inventory.js";
 import { assetUrl } from "../app/asset-url.js";
 
 export const OPENBRUSH_SHADER_BASE_URL = assetUrl("/openbrush/shaders/");
 export const OPENBRUSH_TEXTURE_BASE_URL = assetUrl("/openbrush/textures/");
+/** Generated strokes use Open Brush's original packed vertex layout. */
+export const OPENBRUSH_USES_NEW_TILT_EXPORTER = false;
 
 /** Open Brush export blend modes (IExportableMaterial.cs). */
 export type BrushShaderBlending = "opaque" | "cutout" | "additive" | "alpha";
@@ -11,6 +16,7 @@ export interface BrushShaderTextureBinding {
   /** GLSL uniform name, e.g. "u_MainTex". */
   uniform: string;
   url: string;
+  importer?: BrushTextureImporterSettings;
 }
 
 export interface BrushShaderMaterialDescriptor {
@@ -32,12 +38,38 @@ export interface BrushShaderEligibility {
   reason?: string;
 }
 
+export function resolveLoadedTextureTexelSize(
+  image: unknown,
+): [number, number, number, number] | undefined {
+  const dimensions = image as
+    | {
+        width?: unknown;
+        height?: unknown;
+        naturalWidth?: unknown;
+        naturalHeight?: unknown;
+      }
+    | undefined;
+  const width = dimensions?.naturalWidth ?? dimensions?.width;
+  const height = dimensions?.naturalHeight ?? dimensions?.height;
+  if (
+    typeof width !== "number" ||
+    typeof height !== "number" ||
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    width <= 0 ||
+    height <= 0
+  ) {
+    return undefined;
+  }
+  return [1 / width, 1 / height, width, height];
+}
+
 /**
  * A brush can use its exported GLSL program only when the port's generated
  * geometry satisfies the shader's vertex contract. VertDefault consumes
  * position/normal/color/texcoord0, which ribbon/tube geometry provides;
- * particle shaders need packed center/rotation/birth-time data that the
- * geometry generator does not emit yet.
+ * Genius particle shaders consume the packed center, rotation, birth time,
+ * source position, and vertex ID emitted by their dedicated generator.
  */
 export function getBrushShaderEligibility(
   entry: BrushInventoryEntry | undefined,
@@ -45,15 +77,65 @@ export function getBrushShaderEligibility(
   if (!entry?.shaderAssets) {
     return { eligible: false, reason: "Brush has no extracted GLSL shader assets." };
   }
-  if (!entry.shaderAssets.vertexIsDefault) {
+  const hasGeniusParticleContract =
+    entry.geometryFamily === "particle" &&
+    entry.generatorClass === "GeniusParticlesBrush";
+  const hasSprayParticleContract =
+    entry.geometryFamily === "particle" &&
+    entry.generatorClass === "SprayBrush" &&
+    entry.shaderAssets.vertexIsDefault;
+  const hasMidpointParticleContract =
+    entry.geometryFamily === "particle" &&
+    entry.generatorClass === "MidpointPlusLifetimeSprayBrush" &&
+    (entry.shaderAssets.vertexIsDefault || entry.name === "HyperGrid");
+  const hasWaveformContract =
+    entry.geometryFamily === "emissive" &&
+    entry.name === "Waveform" &&
+    entry.generatorClass === "QuadStripBrushStretchUV";
+  const hasDoubleTaperedContract =
+    entry.geometryFamily === "ribbon" &&
+    (entry.name === "DoubleTaperedMarker" ||
+      entry.name === "DoubleTaperedFlat") &&
+    entry.geometryParams?.ribbonOffsetInTexcoord1 === true;
+  const hasElectricityContract =
+    entry.geometryFamily === "emissive" &&
+    entry.name === "Electricity" &&
+    entry.generatorClass === "FlatGeometryBrush" &&
+    entry.geometryParams?.ribbonOffsetInTexcoord1 === true;
+  const hasRadiusPackedTubeContract =
+    entry.geometryFamily === "tube" &&
+    (entry.name === "Disco" || entry.name === "LightWire") &&
+    entry.generatorClass === "TubeBrush" &&
+    entry.geometryParams?.tubeStoreRadiusInTexcoord0Z === true;
+  const hasHullContract =
+    (entry.geometryFamily === "hull" && entry.generatorClass === "HullBrush") ||
+    (entry.geometryFamily === "concave-hull" &&
+      entry.generatorClass === "ConcaveHullBrush");
+  if (
+    !entry.shaderAssets.vertexIsDefault &&
+    !hasGeniusParticleContract &&
+    !hasMidpointParticleContract &&
+    !hasWaveformContract &&
+    !hasDoubleTaperedContract &&
+    !hasElectricityContract &&
+    !hasRadiusPackedTubeContract &&
+    !hasHullContract
+  ) {
     return {
       eligible: false,
       reason: "Brush vertex shader needs vertex data the geometry generator does not emit yet.",
     };
   }
   if (
+    !hasGeniusParticleContract &&
+    !hasSprayParticleContract &&
+    !hasMidpointParticleContract &&
     entry.geometryFamily !== "ribbon" &&
     entry.geometryFamily !== "emissive" &&
+    entry.geometryFamily !== "thick-strip" &&
+    entry.geometryFamily !== "hull" &&
+    entry.geometryFamily !== "concave-hull" &&
+    entry.geometryFamily !== "print3d" &&
     entry.geometryFamily !== "tube"
   ) {
     return {
@@ -115,12 +197,11 @@ export function createBrushShaderMaterialDescriptor(
     .map(([param, file]) => ({
       uniform: `u_${param}`,
       url: `${OPENBRUSH_TEXTURE_BASE_URL}${file}`,
+      importer: assets.textureImporters[param],
     }));
 
   const blending = resolveBrushShaderBlending(entry.blendMode);
-  // The interim 4-sided tube prism has unvalidated winding, so culling would
-  // drop visible faces; render tubes double-sided until the SH6 tube rewrite.
-  const doubleSided = !entry.enableCull || entry.geometryFamily === "tube";
+  const doubleSided = entry.geometryParams?.renderBackfaces ?? !entry.enableCull;
   return {
     guid: entry.guid,
     name: entry.name,
@@ -146,22 +227,104 @@ export function createBrushShaderMaterialDescriptor(
  * Three's non-raw prefix already declares the built-in matrix uniforms (and
  * rewrites them to per-view arrays under multiview), so the shader's own
  * declarations must be dropped to avoid duplicate/broken declarations.
- * Derivative functions are core in GLSL ES 3.00, so the old extension
- * directive is dropped too.
+ * Derivative functions are core in GLSL ES 3.00, but the exported derivative
+ * bump branch produced black strokes on Quest hardware. The guarded replacement
+ * below rejects degenerate derivatives and falls back per fragment instead of
+ * poisoning the whole stroke; defining the reserved GL_* extension macro is not
+ * legal GLSL.
  */
-export function prepareBrushShaderSource(source: string): string {
+export type BrushBumpMappingMode = "fallback" | "guarded";
+
+const GUARDED_BUMP_NORMAL_GLSL = `uniform sampler2D u_BumpMap;
+uniform vec4 u_BumpMap_TexelSize;
+
+vec3 PerturbNormal(vec3 position, vec3 normal, vec2 uv) {
+  highp vec3 positionDx = dFdx(position);
+  highp vec3 positionDy = dFdy(position);
+  highp vec2 uvDx = dFdx(uv);
+  highp vec2 uvDy = dFdy(uv);
+  highp float determinant = uvDx.x * uvDy.y - uvDx.y * uvDy.x;
+  highp float safeDeterminant = determinant >= 0.0
+    ? max(determinant, 1e-8)
+    : min(determinant, -1e-8);
+  highp vec3 positionDu =
+    (uvDy.y * positionDx - uvDx.y * positionDy) / safeDeterminant;
+  highp vec3 positionDv =
+    (-uvDy.x * positionDx + uvDx.x * positionDy) / safeDeterminant;
+
+  highp vec2 texel = max(u_BumpMap_TexelSize.xy, vec2(1e-6));
+  highp float heightCenter = texture2D(u_BumpMap, uv).x;
+  highp float heightU = texture2D(u_BumpMap, uv + vec2(texel.x, 0.0)).x;
+  highp float heightV = texture2D(u_BumpMap, uv + vec2(0.0, texel.y)).x;
+  highp float faceSign = gl_FrontFacing ? 1.0 : -1.0;
+  highp float heightDu =
+    (heightU - heightCenter) * dispAmount * faceSign / texel.x;
+  highp float heightDv =
+    (heightV - heightCenter) * dispAmount * faceSign / texel.y;
+  highp vec3 candidate = cross(
+    positionDu + normal * heightDu,
+    positionDv + normal * heightDv
+  );
+  highp float candidateLengthSquared = dot(candidate, candidate);
+  bool invalid =
+    abs(determinant) < 1e-8 ||
+    !(candidateLengthSquared > 1e-12) ||
+    candidateLengthSquared > 1e12;
+  if (invalid) {
+    return normal;
+  }
+  candidate *= inversesqrt(candidateLengthSquared);
+  return dot(candidate, normal) < 0.0 ? -candidate : candidate;
+}
+`;
+
+export function prepareBrushShaderSource(
+  source: string,
+  bumpMappingMode: BrushBumpMappingMode = "guarded",
+): string {
+  const aliasedSource = renameDeclaredStandardAttribute(
+    renameDeclaredStandardAttribute(source, "position", "a_position"),
+    "color",
+    "a_color",
+  );
+  const hasCustomInverse = /\bmat4\s+inverse\s*\(\s*mat4\b/.test(aliasedSource);
   return (
-    source
+    aliasedSource
       .replace(
         /^[ \t]*uniform[ \t]+(?:highp[ \t]+|mediump[ \t]+|lowp[ \t]+)?(?:mat4[ \t]+(?:modelViewMatrix|projectionMatrix|viewMatrix|modelMatrix)|mat3[ \t]+normalMatrix|vec3[ \t]+cameraPosition)[ \t]*;[^\n]*\n?/gm,
         "",
       )
       .replace(/^[ \t]*#extension[ \t]+GL_OES_standard_derivatives[^\n]*\n?/gm, "")
+      .replace(
+        /^[ \t]*#ifndef[ \t]+GL_OES_standard_derivatives\b[^\n]*\n([\s\S]*?)^[ \t]*#else[^\n]*\n[\s\S]*?^[ \t]*#endif[^\n]*\n?/gm,
+        (_match, fallback: string) =>
+          bumpMappingMode === "guarded"
+            ? GUARDED_BUMP_NORMAL_GLSL
+            : fallback,
+      )
       // The particle shaders ship their own mat4 inverse(), legal in the
       // exported GLSL 1.00 but a redeclaration of the built-in once three
       // promotes the source to GLSL ES 3.00 — rename definition and calls.
-      .replace(/\binverse\b(?=\s*\()/g, "tb_inverse")
+      .replace(
+        /\binverse\b(?=\s*\()/g,
+        hasCustomInverse ? "tb_inverse" : "inverse",
+      )
   );
+}
+
+function renameDeclaredStandardAttribute(
+  source: string,
+  standardName: string,
+  alias: string,
+): string {
+  const declaration = new RegExp(
+    `^[ \\t]*(?:attribute|in)[ \\t]+(?:highp[ \\t]+|mediump[ \\t]+|lowp[ \\t]+)?vec3[ \\t]+${standardName}[ \\t]*;`,
+    "m",
+  );
+  if (!declaration.test(source)) {
+    return source;
+  }
+  return source.replace(new RegExp(`\\b${standardName}\\b`, "g"), alias);
 }
 
 /**
@@ -198,4 +361,25 @@ export function packBrushShaderTime(
   timeSeconds: number,
 ): [number, number, number, number] {
   return [timeSeconds / 20, timeSeconds, timeSeconds * 2, timeSeconds * 3];
+}
+
+export function hasBrushMainTextureCutout(fragmentShader: string): boolean {
+  return (
+    /texture\s*\(\s*u_MainTex\s*,\s*v_texcoord0\s*\)/.test(fragmentShader) &&
+    /mainTex\.a\s*\*\s*v_color\.a\s*<\s*u_Cutoff/.test(fragmentShader) &&
+    /\bdiscard\s*;/.test(fragmentShader)
+  );
+}
+
+export function hasTubeToonInvertedPassContract(
+  vertexShader: string,
+  fragmentShader: string,
+): boolean {
+  return (
+    /uniform\s+highp\s+float\s+u_TubeToonPass\s*;/.test(vertexShader) &&
+    /uniform\s+highp\s+float\s+u_TubeToonOutlineSize\s*;/.test(vertexShader) &&
+    vertexShader.includes("a_normal.y * 0.2") &&
+    /uniform\s+highp\s+float\s+u_TubeToonPass\s*;/.test(fragmentShader) &&
+    fragmentShader.includes("bool blackPass")
+  );
 }

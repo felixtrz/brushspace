@@ -371,6 +371,7 @@ Call `xr_get_session_status` before doing anything else. In environments with de
 
 - Dev server not running → Start with `npm run dev` (CLI-managed) or `npx iwsdk dev up` for the explicit runtime-first entrypoint
 - Browser tab in background → Bring to foreground (Chrome throttles background tabs)
+- Dedicated automation browser unavailable → Terminate and relaunch only the automation-profile browser; never terminate the user's normal Chrome profile
 - Session not active → Use `xr_accept_session`
 
 ### hzdb (Meta Quest Device Tools)

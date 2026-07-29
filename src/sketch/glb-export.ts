@@ -148,6 +148,8 @@ export function exportSketchDocumentToGlb(
     const geometry = generateBrushGeometry(stroke, geometryFamily, {
       pressureSizeRange: brush?.pressureSizeRange,
       pressureOpacityRange: brush?.pressureOpacityRange,
+      geometryParams: brush?.geometryParams,
+      generatorClass: brush?.generatorClass,
     });
     const vertexCount = geometry.positions.length / 3;
     if (vertexCount === 0 || geometry.indices.length === 0) {
@@ -191,6 +193,15 @@ export function exportSketchDocumentToGlb(
       "VEC4",
       ARRAY_BUFFER,
     );
+    const tangentAccessor = addAccessor(
+      writer,
+      bufferViews,
+      accessors,
+      geometry.tangents,
+      COMPONENT_FLOAT,
+      "VEC4",
+      ARRAY_BUFFER,
+    );
     const uvAccessor = addAccessor(
       writer,
       bufferViews,
@@ -200,6 +211,17 @@ export function exportSketchDocumentToGlb(
       "VEC2",
       ARRAY_BUFFER,
     );
+    const packedUvAccessor = geometry.packedUvs
+      ? addAccessor(
+          writer,
+          bufferViews,
+          accessors,
+          geometry.packedUvs,
+          COMPONENT_FLOAT,
+          "VEC3",
+          ARRAY_BUFFER,
+        )
+      : undefined;
     const indexAccessor = addAccessor(
       writer,
       bufferViews,
@@ -236,8 +258,12 @@ export function exportSketchDocumentToGlb(
           attributes: {
             POSITION: positionAccessor,
             NORMAL: normalAccessor,
+            TANGENT: tangentAccessor,
             COLOR_0: colorAccessor,
             TEXCOORD_0: uvAccessor,
+            ...(packedUvAccessor === undefined
+              ? {}
+              : { _TB_TEXCOORD_0: packedUvAccessor }),
           },
           indices: indexAccessor,
           material: materialIndex,

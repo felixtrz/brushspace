@@ -56,6 +56,29 @@
     background-color: rgba(255, 255, 255, 0.9);
   }
 
+  .mode-row {
+    flex-direction: row;
+    width: 292px;
+    height: 30px;
+    margin-top: 6px;
+  }
+
+  .mode-button {
+    width: 292px;
+    height: 28px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.7);
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .mode-button:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+  }
+
   .grid-row {
     flex-direction: row;
     justify-content: space-between;
@@ -131,10 +154,25 @@
 
   .brush-name {
     width: 204px;
-    height: 22px;
+    height: 18px;
     font-size: 15px;
     font-weight: 700;
     color: #ffffff;
+    text-align: center;
+  }
+
+  .brush-labels {
+    width: 204px;
+    height: 34px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .brush-confidence {
+    width: 204px;
+    height: 14px;
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.78);
     text-align: center;
   }
 
@@ -148,6 +186,9 @@
     <span id="brush-page-mark" class="page-mark">1 / 1</span>
   </div>
   <div class="divider"></div>
+  <div class="mode-row">
+    <button id="brush-experimental-toggle" class="mode-button">Experimental: Off</button>
+  </div>
   <div class="grid-row">
     <button id="brush-cell-0" class="brush-cell">
       <img id="brush-icon-0" class="brush-icon" src="/openbrush/blank-icon.png"></img>
@@ -190,25 +231,14 @@
       <img id="brush-icon-11" class="brush-icon" src="/openbrush/blank-icon.png"></img>
     </button>
   </div>
-  <div class="grid-row">
-    <button id="brush-cell-12" class="brush-cell">
-      <img id="brush-icon-12" class="brush-icon" src="/openbrush/blank-icon.png"></img>
-    </button>
-    <button id="brush-cell-13" class="brush-cell">
-      <img id="brush-icon-13" class="brush-icon" src="/openbrush/blank-icon.png"></img>
-    </button>
-    <button id="brush-cell-14" class="brush-cell">
-      <img id="brush-icon-14" class="brush-icon" src="/openbrush/blank-icon.png"></img>
-    </button>
-    <button id="brush-cell-15" class="brush-cell">
-      <img id="brush-icon-15" class="brush-icon" src="/openbrush/blank-icon.png"></img>
-    </button>
-  </div>
   <div class="footer-row">
     <button id="brush-page-prev" class="page-button">
       <ChevronLeftIcon class="page-button-icon"></ChevronLeftIcon>
     </button>
-    <span id="brush-active-name" class="brush-name">Brush</span>
+    <div class="brush-labels">
+      <span id="brush-active-name" class="brush-name">Brush</span>
+      <span id="brush-active-confidence" class="brush-confidence">Likely mostly correct</span>
+    </div>
     <button id="brush-page-next" class="page-button">
       <ChevronRightIcon class="page-button-icon"></ChevronRightIcon>
     </button>

@@ -2,12 +2,19 @@ import { normalizeGuid } from "../sketch/binary.js";
 import type { BrushSizeRange } from "./brush-size.js";
 
 export type BrushSupportStatus = "supported" | "fallback" | "unsupported";
+export type BrushFidelityConfidence =
+  | "likely-mostly-correct"
+  | "unverified-or-likely-substantially-wrong";
 export type BrushPressureSizeRange = readonly [number, number];
 export type BrushPressureOpacityRange = readonly [number, number];
 
 export type BrushGeometryFamily =
   | "ribbon"
   | "tube"
+  | "thick-strip"
+  | "hull"
+  | "concave-hull"
+  | "print3d"
   | "emissive"
   | "particle"
   | "unsupported";
@@ -50,19 +57,54 @@ export interface BrushShaderAssetInfo {
   fragmentShaderFile: string;
   /** Manifest texture param name (e.g. "MainTex") → extracted file under public/openbrush/textures/. */
   textureFiles: Record<string, string>;
+  textureImporters: Record<string, BrushTextureImporterSettings>;
+}
+
+export interface BrushTextureImporterSettings {
+  sRGB: boolean;
+  mipmaps: boolean;
+  filter: "point" | "bilinear" | "trilinear";
+  wrapU: "repeat" | "clamp" | "mirror" | "mirror-once";
+  wrapV: "repeat" | "clamp" | "mirror" | "mirror-once";
+  anisotropy: number;
+  mipBias: number;
 }
 
 export interface BrushGeometryParams {
+  brushSizeRange?: BrushSizeRange;
   tileRate?: number;
   textureAtlasV?: number;
   renderBackfaces?: boolean;
   backfaceHueShift?: number;
   tubeStoreRadiusInTexcoord0Z?: boolean;
+  tubeCapAspect?: number;
+  tubeSideCount?: number;
+  tubeEndCaps?: boolean;
+  tubeHardEdges?: boolean;
+  tubeUvStyle?: "distance" | "stretch";
+  tubeShapeModifier?: number;
+  tubeTaperScalar?: number;
+  tubePetalDisplacementAmount?: number;
+  tubePetalDisplacementExponent?: number;
+  tubeBreakAngleMultiplier?: number;
+  ribbonUvStyle?: "distance" | "stretch";
+  ribbonOffsetInTexcoord1?: boolean;
+  m11Compatibility?: boolean;
   opacity?: number;
   solidMinLengthMeters?: number;
   audioReactive?: boolean;
   colorLuminanceMin?: number;
   colorSaturationMax?: number;
+  particleRate?: number;
+  sprayRateMultiplier?: number;
+  particleSpeed?: number;
+  particleInitialRotationRange?: number;
+  particleRandomizeAlpha?: boolean;
+  particleSizeVariance?: number;
+  particlePositionVariance?: number;
+  particleRotationVariance?: number;
+  particleSizeRatio?: [number, number];
+  hullFaceted?: boolean;
 }
 
 /** Geometry generator family resolved from the Unity brush prefab. */
@@ -73,15 +115,25 @@ export type BrushGeneratorFamily =
   | "quad-stamp"
   | "thick-strip"
   | "geometry"
-  | "hull";
+  | "hull"
+  | "print3d";
 
 /** Raw shape of one entry in src/brushes/generated/brush-assets.json. */
 export interface BrushAssetRecord {
+  catalogSection?: "standard" | "experimental";
+  catalogOrder?: number;
   glslSource: "handcrafted" | "template";
   vertexIsDefault: boolean;
   vertexShader: string;
   fragmentShader: string;
-  textures: Record<string, { file: string; resolved: boolean }>;
+  textures: Record<
+    string,
+    {
+      file: string;
+      resolved: boolean;
+      importer?: BrushTextureImporterSettings;
+    }
+  >;
   geometry?: BrushGeometryParams & {
     brushSizeRange?: [number, number];
     pressureSizeRange?: [number, number];
@@ -97,7 +149,10 @@ export interface BrushAssetRecord {
 }
 
 export interface BrushInventoryEntry extends OpenBrushExportBrush {
+  catalogSection?: "standard" | "experimental";
+  catalogOrder?: number;
   supportStatus: BrushSupportStatus;
+  fidelityConfidence: BrushFidelityConfidence;
   geometryFamily: BrushGeometryFamily;
   materialFamily: BrushMaterialFamily;
   brushSizeRange: BrushSizeRange;
@@ -115,6 +170,10 @@ export interface BrushInventoryEntry extends OpenBrushExportBrush {
   buttonIconFile?: string;
   /** True when the brush should be offered in the brush picker. */
   pickerVisible: boolean;
+  /** True when the brush is usable for new painting rather than display-only. */
+  pickerEnabled: boolean;
+  /** True when Open Brush includes this manifest brush under its default tag rules. */
+  portRequired: boolean;
 }
 
 export interface BrushInventorySummary {
@@ -148,7 +207,12 @@ function resolveBrushSupport(
   brush: OpenBrushExportBrush,
   record: BrushAssetRecord | undefined,
 ): BrushSupportDecision {
-  const generatorFamily = record?.generatorFamily;
+  const generatorFamily =
+    record?.generatorClass === "SquareBrush"
+      ? "tube"
+      : record?.generatorClass === "Square3DPrintBrush"
+        ? "print3d"
+        : record?.generatorFamily;
   if (!record || !generatorFamily) {
     return {
       supportStatus: "unsupported",
@@ -169,14 +233,57 @@ function resolveBrushSupport(
           ? "standard"
           : "unlit";
 
-  if (generatorFamily === "ribbon" || generatorFamily === "tube") {
+  if (
+    generatorFamily === "ribbon" ||
+    generatorFamily === "tube" ||
+    generatorFamily === "thick-strip" ||
+    generatorFamily === "print3d" ||
+    (generatorFamily === "hull" &&
+      (record.generatorClass === "HullBrush" ||
+        record.generatorClass === "ConcaveHullBrush"))
+  ) {
     const geometryFamily: BrushGeometryFamily =
       generatorFamily === "tube"
         ? "tube"
+        : generatorFamily === "thick-strip"
+          ? "thick-strip"
+          : generatorFamily === "print3d"
+            ? "print3d"
+          : generatorFamily === "hull"
+            ? record.generatorClass === "ConcaveHullBrush"
+              ? "concave-hull"
+              : "hull"
         : brush.blendMode === 2
           ? "emissive"
           : "ribbon";
-    if (!record.vertexIsDefault) {
+    const hasWaveformContract =
+      brush.name === "Waveform" &&
+      record.generatorClass === "QuadStripBrushStretchUV";
+    const hasDoubleTaperedContract =
+      (brush.name === "DoubleTaperedMarker" ||
+        brush.name === "DoubleTaperedFlat") &&
+      record.generatorClass === "FlatGeometryBrush" &&
+      record.geometry?.ribbonOffsetInTexcoord1 === true;
+    const hasElectricityContract =
+      brush.name === "Electricity" &&
+      record.generatorClass === "FlatGeometryBrush" &&
+      record.geometry?.ribbonOffsetInTexcoord1 === true;
+    const hasRadiusPackedTubeContract =
+      (brush.name === "Disco" || brush.name === "LightWire") &&
+      record.generatorClass === "TubeBrush" &&
+      record.geometry?.tubeStoreRadiusInTexcoord0Z === true;
+    const hasHullContract =
+      generatorFamily === "hull" &&
+      (record.generatorClass === "HullBrush" ||
+        record.generatorClass === "ConcaveHullBrush");
+    if (
+      !record.vertexIsDefault &&
+      !hasWaveformContract &&
+      !hasDoubleTaperedContract &&
+      !hasElectricityContract &&
+      !hasRadiusPackedTubeContract &&
+      !hasHullContract
+    ) {
       return {
         supportStatus: "fallback",
         geometryFamily,
@@ -201,13 +308,28 @@ function resolveBrushSupport(
   }
 
   if (generatorFamily === "particle") {
+    const hasGeniusParticleContract =
+      record.generatorClass === "GeniusParticlesBrush";
+    const hasSprayParticleContract =
+      record.generatorClass === "SprayBrush" && record.vertexIsDefault;
+    const hasMidpointParticleContract =
+      record.generatorClass === "MidpointPlusLifetimeSprayBrush" &&
+      (record.vertexIsDefault || brush.name === "HyperGrid");
+    const hasParticleContract =
+      hasGeniusParticleContract ||
+      hasSprayParticleContract ||
+      hasMidpointParticleContract;
     return {
-      supportStatus: "fallback",
+      supportStatus: hasParticleContract ? "supported" : "fallback",
       geometryFamily: "particle",
       materialFamily,
-      pickerVisible: false,
-      unsupportedReason:
-        "Particle brushes are deferred until a proper particle system exists.",
+      pickerVisible:
+        hasParticleContract &&
+        record.supersededByGuid === undefined &&
+        (record.tags ?? []).includes("default"),
+      unsupportedReason: hasParticleContract
+        ? undefined
+        : "Spray particle brushes are deferred until their packed vertex contract exists.",
     };
   }
 
@@ -244,9 +366,13 @@ function toShaderAssetInfo(
     return undefined;
   }
   const textureFiles: Record<string, string> = {};
+  const textureImporters: Record<string, BrushTextureImporterSettings> = {};
   for (const [param, texture] of Object.entries(record.textures ?? {})) {
     if (texture.resolved) {
       textureFiles[param] = texture.file;
+      if (texture.importer) {
+        textureImporters[param] = texture.importer;
+      }
     }
   }
   return {
@@ -255,6 +381,7 @@ function toShaderAssetInfo(
     vertexShaderFile: record.vertexShader,
     fragmentShaderFile: record.fragmentShader,
     textureFiles,
+    textureImporters,
   };
 }
 
@@ -270,10 +397,20 @@ export function buildBrushInventoryFromExportManifest(
 
     const assetRecord = assetRecords?.[guid];
     const support = resolveBrushSupport(brush, assetRecord);
+    const fidelityConfidence: BrushFidelityConfidence =
+      support.supportStatus === "supported"
+        ? "likely-mostly-correct"
+        : "unverified-or-likely-substantially-wrong";
+    const tags = assetRecord?.tags ?? [];
+    const portRequired =
+      assetRecord?.catalogSection !== undefined &&
+      !tags.includes("broken") &&
+      (tags.includes("default") || tags.includes("experimental"));
     return {
       ...brush,
       guid,
       supportStatus: support.supportStatus,
+      fidelityConfidence,
       geometryFamily: support.geometryFamily,
       materialFamily: support.materialFamily,
       brushSizeRange: toRange(
@@ -291,17 +428,46 @@ export function buildBrushInventoryFromExportManifest(
       ),
       unsupportedReason: support.unsupportedReason,
       shaderAssets: toShaderAssetInfo(assetRecord),
-      geometryParams: assetRecord?.geometry,
+      geometryParams: assetRecord
+        ? {
+            ...assetRecord.geometry,
+            ...(assetRecord.generatorClass === "HullBrush"
+              ? { hullFaceted: brush.name !== "SmoothHull" }
+              : {}),
+          }
+        : undefined,
       generatorClass: assetRecord?.generatorClass,
       supersededByGuid: assetRecord?.supersededByGuid,
-      tags: assetRecord?.tags ?? [],
+      tags,
       buttonIconFile: assetRecord?.buttonIcon,
-      pickerVisible: support.pickerVisible,
+      catalogSection: assetRecord?.catalogSection,
+      catalogOrder: assetRecord?.catalogOrder,
+      // The standard Open Brush manifest defines picker membership and order.
+      // Fidelity status is deliberately independent: incomplete brushes use
+      // the existing fallback geometry/material instead of disappearing.
+      pickerVisible: portRequired && assetRecord?.catalogSection === "standard",
+      pickerEnabled: fidelityConfidence === "likely-mostly-correct",
+      portRequired,
     };
   });
 
-  entries.sort((a, b) => a.name.localeCompare(b.name) || a.guid.localeCompare(b.guid));
+  entries.sort(compareOpenBrushCatalogOrder);
   return entries;
+}
+
+function compareOpenBrushCatalogOrder(
+  left: BrushInventoryEntry,
+  right: BrushInventoryEntry,
+): number {
+  const sectionRank = (section: BrushInventoryEntry["catalogSection"]): number =>
+    section === "standard" ? 0 : section === "experimental" ? 1 : 2;
+  return (
+    sectionRank(left.catalogSection) - sectionRank(right.catalogSection) ||
+    (left.catalogOrder ?? Number.MAX_SAFE_INTEGER) -
+      (right.catalogOrder ?? Number.MAX_SAFE_INTEGER) ||
+    left.name.localeCompare(right.name) ||
+    left.guid.localeCompare(right.guid)
+  );
 }
 
 export function summarizeBrushInventory(

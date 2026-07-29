@@ -16,15 +16,35 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 import sharp from "sharp";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const referenceRoot = path.join(repoRoot, "reference");
+const referenceMetadata = JSON.parse(
+  fs.readFileSync(path.join(repoRoot, "open-brush-reference.json"), "utf8"),
+);
+const referenceCommit = execFileSync(
+  "git",
+  ["-C", referenceRoot, "rev-parse", "HEAD"],
+  { encoding: "utf8" },
+).trim();
+if (referenceCommit !== referenceMetadata.commit) {
+  throw new Error(
+    `Open Brush reference checkout is ${referenceCommit}; expected ${referenceMetadata.commit}.`,
+  );
+}
 const generatorsDir = path.join(referenceRoot, "Support", "GlTFShaders", "Generators");
 const includeDir = path.join(referenceRoot, "Support", "GlTFShaders", "include");
 const manifestPath = path.join(referenceRoot, "Support", "exportManifest.json");
+const standardBrushManifestPath = path.join(referenceRoot, "Assets", "Manifest.asset");
+const experimentalBrushManifestPath = path.join(
+  referenceRoot,
+  "Assets",
+  "Manifest_Experimental.asset",
+);
 const brushAssetRoots = [
   path.join(referenceRoot, "Assets", "Resources", "Brushes"),
   path.join(referenceRoot, "Assets", "Resources", "X"),
@@ -43,7 +63,7 @@ const outPublicDir = path.join(repoRoot, "public", "openbrush");
 const outShaderDir = path.join(outPublicDir, "shaders");
 const outTextureDir = path.join(outPublicDir, "textures");
 const outIconDir = path.join(outPublicDir, "icons");
-const outGeneratedDir = path.join(repoRoot, "src", "openbrush", "generated");
+const outGeneratedDir = path.join(repoRoot, "src", "brushes", "generated");
 
 // ---------------------------------------------------------------------------
 // GLSL preprocessing (port of preprocess_lite from gltf_export_shaders.py)
@@ -74,9 +94,12 @@ function expandIncludes(filePath, seenStack = []) {
 function getDefines(brush) {
   const defines = {};
   const floatParams = brush.floatParams ?? {};
-  if (typeof floatParams.EmissionGain === "number") {
-    defines.TB_EMISSION_GAIN = String(floatParams.EmissionGain);
-  }
+  // FragAdditive requires the macro even when the legacy export manifest did
+  // not serialize the material value. Open Brush's additive template default
+  // is 0.5; leaving it undefined makes those brushes fail shader compilation.
+  defines.TB_EMISSION_GAIN = String(
+    typeof floatParams.EmissionGain === "number" ? floatParams.EmissionGain : 0.5,
+  );
   if (typeof floatParams.Cutoff === "number") {
     defines.TB_ALPHA_CUTOFF = String(floatParams.Cutoff);
     defines.TB_HAS_ALPHA_CUTOFF = floatParams.Cutoff < 1 ? "1" : "0";
@@ -202,6 +225,37 @@ function collectBrushDescriptors() {
   return descriptors;
 }
 
+function extractManifestBrushAssetGuids(filePath) {
+  const text = fs.readFileSync(filePath, "utf8");
+  const brushesBlock = text.match(/^  Brushes:\s*\n([\s\S]*?)(?=^  \w|\Z)/m)?.[1] ?? "";
+  return Array.from(
+    brushesBlock.matchAll(/^\s*- \{fileID: \d+, guid: ([0-9a-f]{32}), type: \d+\}$/gm),
+    (match) => match[1],
+  );
+}
+
+function buildBrushCatalogPositions(descriptors) {
+  const brushGuidByAssetGuid = new Map();
+  for (const [brushGuid, descriptor] of descriptors) {
+    if (descriptor.assetMetaGuid) {
+      brushGuidByAssetGuid.set(descriptor.assetMetaGuid, brushGuid);
+    }
+  }
+  const positions = new Map();
+  for (const [section, manifestAssetPath] of [
+    ["standard", standardBrushManifestPath],
+    ["experimental", experimentalBrushManifestPath],
+  ]) {
+    extractManifestBrushAssetGuids(manifestAssetPath).forEach((assetGuid, order) => {
+      const brushGuid = brushGuidByAssetGuid.get(assetGuid);
+      if (brushGuid) {
+        positions.set(brushGuid, { section, order });
+      }
+    });
+  }
+  return positions;
+}
+
 /** Map Unity script GUID → C# class name (file basename) for Assets/Scripts. */
 function buildScriptGuidIndex() {
   const index = new Map();
@@ -239,7 +293,7 @@ const GENERATOR_CLASS_FAMILIES = {
  * m_BrushPrefab → prefab MonoBehaviour m_Script GUIDs → class names,
  * keeping the first class with a known family mapping.
  */
-function resolveGeneratorClass(descriptorText, metaGuidIndex, scriptGuidIndex) {
+function resolveGenerator(descriptorText, metaGuidIndex, scriptGuidIndex) {
   const prefabMatch = descriptorText.match(
     /m_BrushPrefab: \{fileID: \d+, guid: ([0-9a-f]{32}),\s+type: \d+\}/,
   );
@@ -260,9 +314,9 @@ function resolveGeneratorClass(descriptorText, metaGuidIndex, scriptGuidIndex) {
       classNames.push(className);
     }
   }
-  return (
-    classNames.find((name) => name in GENERATOR_CLASS_FAMILIES) ?? classNames[0]
-  );
+  const generatorClass =
+    classNames.find((name) => name in GENERATOR_CLASS_FAMILIES) ?? classNames[0];
+  return generatorClass ? { generatorClass, prefabText } : undefined;
 }
 
 function parseMaterialTextures(matText) {
@@ -310,6 +364,102 @@ function extractGeometryParams(descriptorText) {
     brushSizeRange: parseYamlVec2(descriptorText, "m_BrushSizeRange"),
     pressureSizeRange: parseYamlVec2(descriptorText, "m_PressureSizeRange"),
     pressureOpacityRange: parseYamlVec2(descriptorText, "m_PressureOpacityRange"),
+    m11Compatibility:
+      parseYamlScalar(descriptorText, "m_M11Compatibility") === 1,
+    particleRate: parseYamlScalar(descriptorText, "m_ParticleRate"),
+    sprayRateMultiplier: parseYamlScalar(
+      descriptorText,
+      "m_SprayRateMultiplier",
+    ),
+    particleSpeed: parseYamlScalar(descriptorText, "m_ParticleSpeed"),
+    particleInitialRotationRange: parseYamlScalar(
+      descriptorText,
+      "m_ParticleInitialRotationRange",
+    ),
+    particleRandomizeAlpha:
+      parseYamlScalar(descriptorText, "m_RandomizeAlpha") === 1,
+    particleSizeVariance: parseYamlScalar(descriptorText, "m_SizeVariance"),
+    particlePositionVariance: parseYamlScalar(
+      descriptorText,
+      "m_PositionVariance",
+    ),
+    particleRotationVariance: parseYamlScalar(
+      descriptorText,
+      "m_RotationVariance",
+    ),
+    particleSizeRatio: parseYamlVec2(descriptorText, "m_SizeRatio"),
+  };
+}
+
+function extractGeneratorGeometryParams(generator) {
+  if (generator?.generatorClass === "FlatGeometryBrush") {
+    const uvStyle = parseYamlScalar(generator.prefabText, "m_uvStyle");
+    return {
+      ribbonUvStyle: uvStyle === 1 ? "stretch" : "distance",
+      ribbonOffsetInTexcoord1:
+        parseYamlScalar(generator.prefabText, "m_bOffsetInTexcoord1") === 1,
+    };
+  }
+  if (generator?.generatorClass !== "TubeBrush") {
+    return {};
+  }
+  const prefabText = generator.prefabText;
+  const uvStyle = parseYamlScalar(prefabText, "m_uvStyle");
+  return {
+    tubeCapAspect: parseYamlScalar(prefabText, "m_CapAspect"),
+    tubeSideCount: parseYamlScalar(prefabText, "m_PointsInClosedCircle"),
+    tubeEndCaps: parseYamlScalar(prefabText, "m_EndCaps") === 1,
+    tubeHardEdges: parseYamlScalar(prefabText, "m_HardEdges") === 1,
+    tubeUvStyle: uvStyle === 1 ? "stretch" : "distance",
+    tubeShapeModifier: parseYamlScalar(prefabText, "m_ShapeModifier"),
+    tubeTaperScalar: parseYamlScalar(prefabText, "m_TaperScalar"),
+    tubePetalDisplacementAmount: parseYamlScalar(
+      prefabText,
+      "m_PetalDisplacementAmt",
+    ),
+    tubePetalDisplacementExponent: parseYamlScalar(
+      prefabText,
+      "m_PetalDisplacementExp",
+    ),
+    tubeBreakAngleMultiplier: parseYamlScalar(
+      prefabText,
+      "m_BreakAngleMultiplier",
+    ),
+  };
+}
+
+function extractTextureImporterSettings(sourcePath) {
+  const metaPath = `${sourcePath}.meta`;
+  if (!fs.existsSync(metaPath)) {
+    return undefined;
+  }
+  const text = fs.readFileSync(metaPath, "utf8");
+  const filterMode = parseYamlScalar(text, "filterMode");
+  const wrapU = parseYamlScalar(text, "wrapU");
+  const wrapV = parseYamlScalar(text, "wrapV");
+  const aniso = parseYamlScalar(text, "aniso");
+  const mipBias = parseYamlScalar(text, "mipBias");
+  const toWrapMode = (value) => {
+    switch (value) {
+      case 1:
+        return "clamp";
+      case 2:
+        return "mirror";
+      case 3:
+        return "mirror-once";
+      default:
+        return "repeat";
+    }
+  };
+  return {
+    sRGB: parseYamlScalar(text, "sRGBTexture") !== 0,
+    mipmaps: parseYamlScalar(text, "enableMipMap") !== 0,
+    filter:
+      filterMode === 0 ? "point" : filterMode === 2 ? "trilinear" : "bilinear",
+    wrapU: toWrapMode(wrapU),
+    wrapV: toWrapMode(wrapV),
+    anisotropy: typeof aniso === "number" && aniso > 0 ? aniso : 1,
+    mipBias: typeof mipBias === "number" && mipBias > -100 ? mipBias : 0,
   };
 }
 
@@ -333,6 +483,7 @@ async function main() {
   const metaGuidIndex = buildMetaGuidIndex();
   const scriptGuidIndex = buildScriptGuidIndex();
   const descriptors = collectBrushDescriptors();
+  const catalogPositions = buildBrushCatalogPositions(descriptors);
   const defaultVertexNormalized = stripCommentsAndWhitespace(
     expandIncludes(path.join(includeDir, "VertDefault.glsl")),
   );
@@ -359,6 +510,11 @@ async function main() {
       textures: {},
       geometry: undefined,
     };
+    const catalogPosition = catalogPositions.get(guid);
+    if (catalogPosition) {
+      record.catalogSection = catalogPosition.section;
+      record.catalogOrder = catalogPosition.order;
+    }
 
     // --- shaders ---
     const defines = getDefines(brush);
@@ -404,7 +560,6 @@ async function main() {
       summary.descriptorsMissing += 1;
       problems.push(`${brush.name} (${guid}): no BrushDescriptor .asset found`);
     } else {
-      record.geometry = extractGeometryParams(descriptor.text);
       record.tags = extractBrushTags(descriptor.text);
       // Brush picker button icon (BrushDescriptor.m_ButtonTexture).
       const buttonTextureMatch = descriptor.text.match(
@@ -423,11 +578,16 @@ async function main() {
       } else {
         problems.push(`${brush.name} (${guid}): button icon unresolved`);
       }
-      const generatorClass = resolveGeneratorClass(
+      const generator = resolveGenerator(
         descriptor.text,
         metaGuidIndex,
         scriptGuidIndex,
       );
+      const generatorClass = generator?.generatorClass;
+      record.geometry = {
+        ...extractGeometryParams(descriptor.text),
+        ...extractGeneratorGeometryParams(generator),
+      };
       record.generatorClass = generatorClass;
       record.generatorFamily = generatorClass
         ? GENERATOR_CLASS_FAMILIES[generatorClass]
@@ -450,7 +610,11 @@ async function main() {
       const sourcePath = textureGuid ? metaGuidIndex.get(textureGuid) : undefined;
       if (sourcePath && fs.existsSync(sourcePath)) {
         fs.copyFileSync(sourcePath, path.join(outTextureDir, targetName));
-        record.textures[param] = { file: targetName, resolved: true };
+        record.textures[param] = {
+          file: targetName,
+          resolved: true,
+          importer: extractTextureImporterSettings(sourcePath),
+        };
         summary.texturesCopied += 1;
         if (path.extname(sourcePath).toLowerCase() !== ".png") {
           problems.push(
